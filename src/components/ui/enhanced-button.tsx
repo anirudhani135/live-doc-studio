@@ -53,18 +53,30 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
     const buttonMotionProps = {
       whileHover: { scale: 1.02 },
       whileTap: { scale: 0.98 },
-      transition: { type: "spring", stiffness: 400, damping: 30 }
+      transition: { type: "spring" as const, stiffness: 400, damping: 30 }
     };
 
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, effect, className }))}
+          ref={ref}
+          {...props}
+        >
+          {children}
+        </Slot>
+      );
+    }
+
     return (
-      <Comp
+      <motion.button
         className={cn(buttonVariants({ variant, size, effect, className }))}
         ref={ref}
-        {...(asChild ? {} : buttonMotionProps)}
+        {...buttonMotionProps}
         {...props}
       >
         {children}
-      </Comp>
+      </motion.button>
     );
   }
 );

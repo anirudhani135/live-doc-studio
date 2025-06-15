@@ -3,7 +3,7 @@ import { EnhancedCard, EnhancedCardHeader, EnhancedCardTitle, EnhancedCardDescri
 import { EnhancedButton } from "@/components/ui/enhanced-button";
 import { FileText, Edit, Trash2, Bolt, Folder, Clock, Plus, Code2, Bug, BarChart2, Box, Ticket, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
-import { StaggerItem, staggerItemVariants } from "@/components/ui/page-transition";
+import { StaggerItem, staggerItemVariants, staggerItemTransition } from "@/components/ui/page-transition";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { enhancedToast } from "@/components/ui/toast-system";
 
@@ -77,7 +77,7 @@ const StatusBadge = ({ status }: { status: string }) => (
   <motion.div 
     className="flex items-center gap-2 text-sm font-medium text-slate-600"
     whileHover={{ scale: 1.05 }}
-    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+    transition={{ type: "spring" as const, stiffness: 400, damping: 30 }}
   >
     <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
     <span>{status}</span>
@@ -88,7 +88,7 @@ const Tag = ({ children, icon }: { children: React.ReactNode, icon?: React.React
   <motion.div 
     className="inline-flex items-center gap-1.5 rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 border border-slate-200"
     whileHover={{ scale: 1.05, backgroundColor: "rgb(241 245 249)" }}
-    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+    transition={{ type: "spring" as const, stiffness: 400, damping: 30 }}
   >
     {icon}
     {children}
@@ -116,6 +116,7 @@ const Dashboard = () => {
             <StaggerItem
               key={card.label}
               variants={staggerItemVariants}
+              transition={staggerItemTransition}
               custom={index}
             >
               <EnhancedCard variant="floating" className="bg-white border shadow-sm rounded-xl">
@@ -126,7 +127,7 @@ const Dashboard = () => {
                       className="text-4xl font-bold text-blue-600 mt-2 mb-1"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ delay: 0.3 + index * 0.1, type: "spring", stiffness: 200 }}
+                      transition={{ delay: 0.3 + index * 0.1, type: "spring" as const, stiffness: 200 }}
                     >
                       {card.value}
                     </motion.p>
@@ -134,7 +135,7 @@ const Dashboard = () => {
                   </div>
                   <motion.div
                     whileHover={{ rotate: 5, scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    transition={{ type: "spring" as const, stiffness: 400, damping: 30 }}
                   >
                     {card.icon}
                   </motion.div>
@@ -164,6 +165,7 @@ const Dashboard = () => {
                 <StaggerItem
                   key={p.id}
                   variants={staggerItemVariants}
+                  transition={staggerItemTransition}
                   custom={index}
                 >
                   <motion.div 
@@ -172,12 +174,12 @@ const Dashboard = () => {
                       backgroundColor: "rgb(248 250 252)",
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)"
                     }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    transition={{ type: "spring" as const, stiffness: 400, damping: 30 }}
                   >
                     <motion.div 
                       className={`p-2 rounded-md ${p.iconBg}`}
                       whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{ type: "spring" as const, stiffness: 400, damping: 30 }}
                     >
                       {p.icon}
                     </motion.div>
@@ -242,6 +244,7 @@ const Dashboard = () => {
                       <StaggerItem
                         key={item.label}
                         variants={staggerItemVariants}
+                        transition={staggerItemTransition}
                         custom={index}
                       >
                         <motion.div
@@ -252,13 +255,13 @@ const Dashboard = () => {
                             boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)"
                           }}
                           whileTap={{ scale: 0.98 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                          transition={{ type: "spring" as const, stiffness: 400, damping: 30 }}
                           onClick={item.action}
                         >
                             <motion.div 
                               className={`p-2 rounded-md ${item.iconBg}`}
                               whileHover={{ scale: 1.1, rotate: 5 }}
-                              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                              transition={{ type: "spring" as const, stiffness: 400, damping: 30 }}
                             >
                                 {item.icon}
                             </motion.div>

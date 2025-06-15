@@ -8,24 +8,26 @@ const cardVariants = {
   animate: { 
     opacity: 1, 
     y: 0, 
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }
+    scale: 1
   },
   hover: {
     y: -4,
     scale: 1.02,
-    boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)",
-    transition: {
-      type: "spring",
-      stiffness: 400,
-      damping: 30
-    }
+    boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)"
   },
   tap: { scale: 0.98 }
+};
+
+const cardTransition = {
+  type: "spring" as const,
+  stiffness: 300,
+  damping: 30
+};
+
+const hoverTransition = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 30
 };
 
 const EnhancedCard = React.forwardRef<
@@ -53,6 +55,10 @@ const EnhancedCard = React.forwardRef<
       animate="animate"
       whileHover={animateOnHover ? "hover" : undefined}
       whileTap={variant === "interactive" ? "tap" : undefined}
+      transition={{
+        animate: cardTransition,
+        hover: hoverTransition
+      }}
       {...props}
     >
       {children}

@@ -26,22 +26,29 @@ const pageVariants = {
 };
 
 const pageTransition = {
-  type: "tween",
-  ease: "anticipate",
+  type: "tween" as const,
+  ease: "anticipate" as const,
   duration: 0.4
 };
 
 const staggerContainer = {
   initial: { opacity: 0 },
   in: {
-    opacity: 1,
+    opacity: 1
+  },
+  out: {
+    opacity: 0
+  }
+};
+
+const staggerTransitions = {
+  in: {
     transition: {
       staggerChildren: 0.1,
       delayChildren: 0.2
     }
   },
   out: {
-    opacity: 0,
     transition: {
       staggerChildren: 0.05,
       staggerDirection: -1
@@ -68,6 +75,7 @@ export function PageTransition({ children }: PageTransitionProps) {
           initial="initial"
           animate="in"
           exit="out"
+          transition={staggerTransitions}
         >
           {children}
         </motion.div>
@@ -82,18 +90,16 @@ export const staggerItemVariants = {
   initial: { opacity: 0, y: 20 },
   in: { 
     opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }
+    y: 0
   },
   out: { 
     opacity: 0, 
-    y: -20,
-    transition: {
-      duration: 0.2
-    }
+    y: -20
   }
+};
+
+export const staggerItemTransition = {
+  type: "spring" as const,
+  stiffness: 300,
+  damping: 30
 };
