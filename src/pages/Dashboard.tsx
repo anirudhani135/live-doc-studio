@@ -1,173 +1,176 @@
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, FileText, Folder, Edit, Trash2, Bolt, Settings, Users, LayoutDashboard, ChevronRight, Star, Wand2, ShoppingCart, Book, Music, Utensils, GraduationCap, ShieldCheck, MessageSquare } from "lucide-react";
-
-// Sample data (to match screenshots)
-const projects = [
-  {
-    id: 1,
-    name: "Comprehensive CRM for E-commerce Management",
-    description: "E-commerce Solutions",
-    created: "Dec 25, 2024",
-    updated: "Dec 25, 2024",
-    status: "Completed",
-    category: "E-commerce Solutions",
-  },
-  {
-    id: 2,
-    name: "Website (Multi-Page)",
-    description: "Web Development",
-    created: "Dec 24, 2024",
-    updated: "Dec 24, 2024",
-    status: "Completed",
-    category: "Web Development",
-  },
-];
+import { FileText, Edit, Trash2, Bolt, Folder, Clock, Plus, Code2, Bug, BarChart2, Box, Ticket, RefreshCw } from "lucide-react";
 
 const metricCards = [
   {
     label: "Time Saved",
-    value: "20.5 hours",
-    sub: "+3.5 hours from last document",
-    icon: <Wand2 size={22} className="text-blue-600" />,
+    value: "228.0 hours",
+    sub: "+3.5 hours from last project",
+    icon: <Clock size={28} className="text-slate-500" />,
   },
   {
     label: "Tokens Saved",
-    value: "5.2 million",
+    value: "58 million",
     sub: "+0.4 million from last document",
-    icon: <Bolt size={22} className="text-amber-600" />,
+    icon: <Bolt size={28} className="text-slate-500" />,
   },
   {
-    label: "Projects Completed",
-    value: "2",
-    sub: "13 documents created",
-    icon: <FileText size={22} className="text-emerald-600" />,
+    label: "Projects Created",
+    value: "50",
+    sub: "145 documents created",
+    icon: <Folder size={28} className="text-slate-500" />,
   },
 ];
 
-const inspirationCards = [
-  { icon: <Folder size={20} />, label: "Fitness Tracker" },
-  { icon: <Star size={20} />, label: "Local Events" },
-  { icon: <Settings size={20} />, label: "Smart Home Hub" },
-  { icon: <Book size={20} />, label: "Learning Assistant" },
-  { icon: <ShoppingCart size={20} />, label: "E-commerce" },
-  { icon: <Utensils size={20} />, label: "Recipe Finder" },
-  { icon: <MessageSquare size={20} />, label: "Chat Application" },
-  { icon: <Music size={20} />, label: "Music Streaming" },
-  { icon: <GraduationCap size={20} />, label: "Engineering" },
+const projects = [
+  {
+    id: 1,
+    name: "Codeguide Starter Lite: Modern Web App...",
+    type: "Code Project",
+    draft: true,
+    created: "6/14/2025",
+    updated: "6/14/2025",
+    status: "Active",
+    icon: <FileText size={20} className="text-violet-500" />,
+    iconBg: "bg-violet-100",
+  },
+  {
+    id: 2,
+    name: "Codeguide Starter Lite: Next.js 14 Web Ap...",
+    type: "Code Project",
+    draft: true,
+    created: "6/14/2025",
+    updated: "6/14/2025",
+    status: "Active",
+    icon: <FileText size={20} className="text-blue-500" />,
+    iconBg: "bg-blue-100",
+  },
+  {
+    id: 3,
+    name: "AI-Driven Task Management System:...",
+    type: "Code Project",
+    draft: false,
+    created: "6/11/2025",
+    updated: "6/11/2025",
+    status: "Active",
+    icon: <FileText size={20} className="text-emerald-500" />,
+    iconBg: "bg-emerald-100",
+  },
 ];
 
-const StatusTag = ({ status }: { status: string }) => (
-  <span className="inline-flex items-center text-xs font-semibold rounded-full px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 gap-2 shadow-sm hover:shadow-md transition-all duration-200">
-    <BadgeCheck size={14} className="text-emerald-600" />
-    {status}
-  </span>
+const quickActions = [
+    { label: "New Project", icon: <Plus size={20} className="text-blue-500" />, iconBg: "bg-blue-100" },
+    { label: "Existing Codebase", icon: <Code2 size={20} className="text-emerald-500" />, iconBg: "bg-emerald-100" },
+    { label: "Debug Agent", icon: <Bug size={20} className="text-red-500" />, iconBg: "bg-red-100" },
+    { label: "LLM Comparison", icon: <BarChart2 size={20} className="text-violet-500" />, iconBg: "bg-violet-100" },
+    { label: "Starter Kits", icon: <Box size={20} className="text-amber-500" />, iconBg: "bg-amber-100" },
+    { label: "Member Pass", icon: <Ticket size={20} className="text-slate-500" />, iconBg: "bg-slate-100" },
+];
+
+const StatusBadge = ({ status }: { status: string }) => (
+  <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
+    <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+    <span>{status}</span>
+  </div>
 );
 
-const CategoryTag = ({ category }: { category: string }) => (
-  <span className="inline-flex items-center text-xs font-medium rounded-full px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200">
-    {category}
-  </span>
+const Tag = ({ children, icon }: { children: React.ReactNode, icon?: React.ReactNode }) => (
+  <div className="inline-flex items-center gap-1.5 rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">
+    {icon}
+    {children}
+  </div>
 );
+
 
 const Dashboard = () => {
   return (
-    <section className="w-full max-w-7xl mx-auto px-10 py-16 flex flex-col gap-12 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/50 min-h-screen transition-all duration-300">
-      {/* Dashboard Header */}
-      <div className="space-y-4">
-        <h1 className="text-5xl sm:text-6xl font-bold tracking-tight text-slate-900 mb-3">Dashboard</h1>
-        <div className="text-slate-600 text-xl font-medium">Welcome to your documentation workspace</div>
-      </div>
-
+    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 bg-slate-50 min-h-screen">
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {metricCards.map((card, i) => (
-          <Card key={card.label} className="shadow-xl border-0 bg-white/98 backdrop-blur-md rounded-3xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group overflow-hidden">
-            <CardContent className="flex flex-col gap-4 py-10 px-10 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="flex items-center gap-4 relative z-10">
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-white to-slate-50 border border-slate-200 shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  {card.icon}
-                </div>
-                <span className="text-xl font-semibold text-slate-800">{card.label}</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {metricCards.map((card) => (
+          <Card key={card.label} className="bg-white border shadow-sm rounded-xl">
+            <CardContent className="p-6 flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-slate-500">{card.label}</p>
+                <p className="text-4xl font-bold text-blue-600 mt-2 mb-1">{card.value}</p>
+                <p className="text-xs text-slate-400">{card.sub}</p>
               </div>
-              <div className="text-4xl sm:text-5xl font-bold text-slate-900 mt-3 mb-2 relative z-10">{card.value}</div>
-              <div className="text-sm text-slate-500 font-medium relative z-10">{card.sub}</div>
+              {card.icon}
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Lower section: Recents + Inspiration */}
-      <div className="flex flex-col lg:flex-row gap-10 w-full">
+      {/* Lower section: Recents + Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
         {/* Recent Projects */}
-        <Card className="flex-1 min-w-[400px] shadow-xl border-0 bg-white/98 backdrop-blur-md rounded-3xl overflow-hidden">
-          <CardHeader className="flex-row justify-between items-center pt-10 pb-4 px-10">
-            <div className="space-y-2">
-              <CardTitle className="text-3xl font-bold text-slate-900 mb-0">Recent Projects</CardTitle>
-              <CardDescription className="text-lg font-medium text-slate-600">Your recently worked on projects</CardDescription>
+        <Card className="lg:col-span-3 bg-white border shadow-sm rounded-xl">
+          <CardHeader className="flex-row justify-between items-center pb-4">
+            <div>
+              <CardTitle className="text-xl font-bold text-slate-800">Recent Projects</CardTitle>
+              <CardDescription className="text-sm text-slate-500">Your recently worked on projects</CardDescription>
             </div>
-            <Button variant="ghost" size="sm" className="text-blue-600 font-semibold hover:bg-blue-50 px-4 py-3 h-auto rounded-2xl group transition-all duration-200 border border-transparent hover:border-blue-200">
-              View all <ChevronRight className="ml-2 w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+            <Button variant="link" size="sm" className="text-blue-600 font-medium">
+              View all
             </Button>
           </CardHeader>
-          <CardContent className="pt-2 px-10 pb-10">
-            <div className="flex flex-col gap-6">
-              {projects.map((p) => (
-                <div key={p.id} className="rounded-2xl border border-slate-200 bg-gradient-to-r from-white via-slate-50/30 to-white px-8 py-8 shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 transition-all duration-300 hover:border-blue-300 hover:shadow-xl hover:scale-[1.02] group cursor-pointer">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 group-hover:bg-blue-100 transition-colors duration-300">
-                        <FileText className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <span className="font-semibold text-xl text-slate-900 leading-tight group-hover:text-blue-900 transition-colors duration-300">{p.name}</span>
-                    </div>
-                    <div className="flex gap-4">
-                      <StatusTag status={p.status} />
-                      <CategoryTag category={p.category} />
-                    </div>
-                    <div className="text-sm text-slate-500 font-medium">{`Created ${p.created}  •  Updated ${p.updated}`}</div>
-                  </div>
-                  {/* Actions */}
-                  <div className="flex gap-3 ml-auto">
-                    <Button variant="ghost" size="icon" className="w-12 h-12 rounded-2xl hover:bg-blue-50 transition-all duration-200 border border-transparent hover:border-blue-200" aria-label="Edit">
-                      <Edit size={20} className="text-blue-600" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="w-12 h-12 rounded-2xl hover:bg-red-50 transition-all duration-200 border border-transparent hover:border-red-200" aria-label="Delete">
-                      <Trash2 size={20} className="text-red-500" />
-                    </Button>
-                  </div>
+          <CardContent className="flex flex-col gap-3">
+            {projects.map((p) => (
+              <div key={p.id} className="rounded-lg border border-slate-200 bg-white p-4 flex items-center gap-4 transition-all hover:bg-slate-50 cursor-pointer">
+                <div className={`p-2 rounded-md ${p.iconBg}`}>
+                  {p.icon}
                 </div>
-              ))}
-            </div>
+                <div className="flex-1 space-y-1">
+                    <p className="font-semibold text-sm text-slate-800">{p.name}</p>
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <Tag>{p.type}</Tag>
+                        {p.draft && <Tag icon={<RefreshCw size={12} />}>Draft</Tag>}
+                        <span>•</span>
+                        <span>Created {p.created}</span>
+                        <span>•</span>
+                        <StatusBadge status={p.status} />
+                    </div>
+                </div>
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="icon" className="w-8 h-8 rounded-md hover:bg-slate-200" aria-label="Edit">
+                    <Edit size={16} className="text-slate-500" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="w-8 h-8 rounded-md hover:bg-red-100" aria-label="Delete">
+                    <Trash2 size={16} className="text-red-500" />
+                  </Button>
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
 
-        {/* Inspiration */}
-        <Card className="flex-[1.1] min-w-[400px] shadow-xl border-0 bg-white/98 backdrop-blur-md rounded-3xl overflow-hidden">
-          <CardHeader className="flex-row justify-between items-center pt-10 pb-4 px-10">
-            <div className="space-y-2">
-              <CardTitle className="text-3xl font-bold text-slate-900 mb-0">Inspiration</CardTitle>
-              <CardDescription className="text-lg font-medium text-slate-600">Ideas to kickstart your next project</CardDescription>
-            </div>
-            <Button variant="ghost" size="sm" className="text-blue-600 font-semibold hover:bg-blue-50 px-4 py-3 h-auto rounded-2xl group transition-all duration-200 border border-transparent hover:border-blue-200">
-              View all <ChevronRight className="ml-2 w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
-            </Button>
-          </CardHeader>
-          <CardContent className="pt-2 px-10 pb-10">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-              {inspirationCards.map((item) => (
-                <div
-                  key={item.label}
-                  className="flex items-center gap-4 px-5 py-4 border border-slate-200 bg-gradient-to-br from-white via-slate-50/50 to-white rounded-2xl text-base font-medium text-slate-800 shadow-lg hover:border-blue-300 hover:bg-gradient-to-br hover:from-blue-50/50 hover:via-white hover:to-blue-50/30 hover:shadow-xl transition-all duration-300 hover:scale-[1.05] cursor-pointer group"
-                  style={{ minHeight: 64 }}
-                >
-                  <span className="text-blue-600 group-hover:text-blue-700 transition-colors duration-300 group-hover:scale-110 transform">{item.icon}</span>
-                  <span className="group-hover:text-slate-900 transition-colors duration-300 font-semibold">{item.label}</span>
+        {/* Quick Actions */}
+        <Card className="lg:col-span-2 bg-white border shadow-sm rounded-xl">
+            <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                    <Bolt size={20} className="text-slate-600" />
+                    <div>
+                        <CardTitle className="text-xl font-bold text-slate-800">Quick Actions</CardTitle>
+                        <CardDescription className="text-sm text-slate-500">Quick access to common tasks</CardDescription>
+                    </div>
                 </div>
-              ))}
-            </div>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                {quickActions.map((item) => (
+                    <div
+                    key={item.label}
+                    className="flex items-center gap-3 p-3 border border-slate-200 bg-white rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
+                    >
+                        <div className={`p-2 rounded-md ${item.iconBg}`}>
+                            {item.icon}
+                        </div>
+                        <span>{item.label}</span>
+                    </div>
+                ))}
+                </div>
           </CardContent>
         </Card>
       </div>
