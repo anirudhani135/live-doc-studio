@@ -1,11 +1,11 @@
 
 import React, { useState } from "react";
-import { Plus, Bot } from "lucide-react";
+import { Plus, Bot, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDocuments } from "@/hooks/useDocuments";
 import DocumentList from "@/components/documents/DocumentList";
 import DocumentDialog from "@/components/documents/DocumentDialog";
-import DocumentEditor from "@/components/documents/DocumentEditor";
+import RealTimeEditor from "@/components/collaboration/RealTimeEditor";
 import AIAssistant from "@/components/ai/AIAssistant";
 
 const DocumentsWithAI = () => {
@@ -22,6 +22,7 @@ const DocumentsWithAI = () => {
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [editingDoc, setEditingDoc] = useState(null);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [showRealTimeEditor, setShowRealTimeEditor] = useState(false);
 
   const handleNewDoc = () => {
     setSelectedDoc(null);
@@ -50,6 +51,7 @@ const DocumentsWithAI = () => {
 
   const handleOpen = (doc) => {
     setEditingDoc(doc);
+    setShowRealTimeEditor(true);
   };
 
   const handleEditorSave = async (content: string, metadata?: any) => {
@@ -59,21 +61,52 @@ const DocumentsWithAI = () => {
         metadata,
         title: editingDoc.title 
       });
-      setEditingDoc(null);
     }
   };
 
   const handleBackToList = () => {
     setEditingDoc(null);
+    setShowRealTimeEditor(false);
   };
 
-  if (editingDoc) {
+  if (showRealTimeEditor && editingDoc) {
     return (
-      <DocumentEditor
-        document={editingDoc}
-        onSave={handleEditorSave}
-        onBack={handleBackToList}
-      />
+      <div className="h-full flex flex-col">
+        <div className="p-4 border-b flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={handleBackToList}>
+              ← Back to Documents
+            </Button>
+            <h1 className="text-xl font-semibold">{editingDoc.title}</h1>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAIAssistant(!showAIAssistant)}
+            >
+              <Bot className="w-4 h-4 mr-2" />
+              AI Assistant
+            </Button>
+          </div>
+        </div>
+        
+        <div className="flex-1 flex">
+          <div className="flex-1">
+            <RealTimeEditor
+              documentId={editingDoc.id}
+              initialContent={editingDoc.content || ''}
+              onSave={handleEditorSave}
+            />
+          </div>
+          
+          {showAIAssistant && (
+            <div className="w-80 border-l bg-background">
+              <AIAssistant />
+            </div>
+          )}
+        </div>
+      </div>
     );
   }
 
@@ -84,7 +117,7 @@ const DocumentsWithAI = () => {
           <div>
             <h1 className="text-2xl font-bold">Documents</h1>
             <div className="text-muted-foreground">
-              All your specs, guides, and living documentation.
+              All your specs, guides, and living documentation with real-time collaboration.
             </div>
           </div>
           <div className="flex gap-2">
@@ -96,6 +129,14 @@ const DocumentsWithAI = () => {
             >
               <Bot className="w-4 h-4" />
               AI Assistant
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Users className="w-4 h-4" />
+              Collaborate
             </Button>
             <Button size="sm" onClick={handleNewDoc}>
               <Plus className="w-4 h-4 mr-2" />
