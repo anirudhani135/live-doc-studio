@@ -1,4 +1,3 @@
-
 import {
   Sidebar,
   SidebarContent,
@@ -25,12 +24,14 @@ import {
   Ticket,
   LayoutTemplate,
   Sun,
+  Moon,
   LogOut,
   Code2,
   Sparkles,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/components/theme-provider";
 
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -60,6 +61,11 @@ const NewBadge = () => (
 
 export function AppSidebar() {
   const location = useLocation();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
 
   return (
     <Sidebar className="border-r border-sidebar-border bg-sidebar">
@@ -155,9 +161,13 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t border-sidebar-border space-y-3">
-        <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground font-medium hover:bg-sidebar-accent/80 rounded-lg px-3 py-2.5">
-          <Sun size={18} />
-          <span>Light Mode</span>
+        <Button 
+          variant="ghost" 
+          onClick={toggleTheme}
+          className="w-full justify-start gap-3 text-sidebar-foreground font-medium hover:bg-sidebar-accent/80 rounded-lg px-3 py-2.5"
+        >
+          {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+          <span>{theme === "light" ? "Dark Mode" : "Light Mode"}</span>
         </Button>
         
         <div className="px-3 py-2">
