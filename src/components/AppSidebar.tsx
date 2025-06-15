@@ -11,7 +11,7 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   PlusCircle,
@@ -30,6 +30,8 @@ import {
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -57,6 +59,27 @@ const NewBadge = () => (
 
 export function AppSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/');
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out of your account.",
+      });
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Sidebar>
@@ -143,13 +166,19 @@ export function AppSidebar() {
               <span>Light</span>
           </Button>
           <div className="px-2 py-1">
-              <p className="text-sm font-semibold text-slate-800">Pro Member</p>
+              <p className="text-sm font-semibold text-slate-800">
+                {user?.email?.split('@')[0] || 'User'}
+              </p>
               <div className="w-full bg-slate-200 rounded-full h-1 mt-1.5">
                   <div className="bg-blue-600 h-1 rounded-full" style={{ width: '75%' }}></div>
               </div>
           </div>
           <Separator className="my-1" />
-          <Button variant="ghost" className="w-full justify-start gap-2 text-slate-600 font-medium">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start gap-2 text-slate-600 font-medium"
+            onClick={handleSignOut}
+          >
               <LogOut size={20} />
               <span>Logout</span>
           </Button>
