@@ -20,7 +20,7 @@ const helpItems = [
     },
     {
         title: "Documentation",
-        bgColor: "bg-amber-50 border-amber-100",
+        bgColor: "bg-slate-50 border-slate-100",
         content: "Maintain clear README files. API documentation with Swagger/OpenAPI. Keep inline comments meaningful and updated."
     }
 ];
