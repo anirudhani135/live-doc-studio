@@ -14,6 +14,7 @@ import Settings from "./pages/Settings";
 import { AppSidebar } from "./components/AppSidebar";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import Landing from "./pages/Landing";
+import { PageTransition } from "./components/ui/page-transition";
 
 const queryClient = new QueryClient();
 
@@ -23,15 +24,17 @@ function AppContent() {
 
   if (isLandingPage) {
     return (
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/documents" element={<Documents />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <PageTransition>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/documents" element={<Documents />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PageTransition>
     );
   }
 
@@ -48,15 +51,17 @@ function AppContent() {
               </span>
             </header>
             <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/documents" element={<Documents />} />
-                <Route path="/team" element={<Team />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <PageTransition>
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/documents" element={<Documents />} />
+                  <Route path="/team" element={<Team />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </PageTransition>
             </main>
           </div>
         </SidebarInset>
