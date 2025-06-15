@@ -21,19 +21,19 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-background">
-          <AppSidebar />
-          <SidebarInset>
-            <div className="flex flex-col min-h-screen">
-              <header className="w-full flex items-center p-2 border-b">
-                <SidebarTrigger />
-                <span className="text-xl font-bold ml-2 tracking-tight text-primary">
-                  Livedoc
-                </span>
-              </header>
-              <main className="flex-1">
-                <BrowserRouter>
+      <BrowserRouter>
+        <SidebarProvider>
+          <div className="min-h-screen flex w-full bg-background">
+            <AppSidebar />
+            <SidebarInset>
+              <div className="flex flex-col min-h-screen">
+                <header className="w-full flex items-center p-2 border-b">
+                  <SidebarTrigger />
+                  <span className="text-xl font-bold ml-2 tracking-tight text-primary">
+                    Livedoc
+                  </span>
+                </header>
+                <main className="flex-1">
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/dashboard" element={<Dashboard />} />
@@ -44,14 +44,15 @@ const App = () => (
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                </BrowserRouter>
-              </main>
-            </div>
-          </SidebarInset>
-        </div>
-      </SidebarProvider>
+                </main>
+              </div>
+            </SidebarInset>
+          </div>
+        </SidebarProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
 
 export default App;
+
