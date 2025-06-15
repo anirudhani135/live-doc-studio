@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +23,38 @@ export const useDocuments = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // New: Fetch documents shared with the user
+  const fetchSharedDocuments = async () => {
+    if (!user) return [];
+    setLoading(true);
+    try {
+      // Select documents where the user is in the shares table.
+      const { data, error } = await supabase
+        .from("documents")
+        .select("*")
+        .in(
+          "id",
+          supabase
+            .from("document_shares")
+            .select("document_id")
+            .eq("shared_with_user_id", user.id)
+        )
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error("Error fetching shared documents:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch shared documents.",
+        variant: "destructive",
+      });
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchDocuments = async () => {
     if (!user) return;
@@ -140,5 +171,6 @@ export const useDocuments = () => {
     updateDocument,
     deleteDocument,
     refetch: fetchDocuments,
+    fetchSharedDocuments, // Exposed (can be used to show shared docs)
   };
 };
