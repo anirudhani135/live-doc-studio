@@ -20,21 +20,21 @@ const helpItems = [
     },
     {
         title: "Documentation",
-        bgColor: "bg-surface-sunken border border-light",
+        bgColor: "bg-surface-elevated border-border",
         content: "Maintain clear README files. API documentation with Swagger/OpenAPI. Keep inline comments meaningful and updated."
     }
 ];
 
 export function HelpGuide() {
     return (
-        <aside className="hidden lg:block w-[380px] bg-white border-l border-border p-6 shrink-0">
+        <aside className="hidden lg:block w-[380px] bg-surface-elevated border-l border-border p-6 shrink-0">
             <div className="flex items-center gap-3 mb-6">
                 <div className="bg-primary-light p-2 rounded-lg border border-primary/20">
                     <Book className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                     <h2 className="text-base font-semibold text-primary">Help Guide</h2>
-                    <p className="text-sm text-muted">Best practices for software projects</p>
+                    <p className="text-sm text-tertiary">Best practices for software projects</p>
                 </div>
             </div>
             <div className="space-y-3">
@@ -46,7 +46,7 @@ export function HelpGuide() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-4 pt-0">
-                            <p className="text-xs text-muted leading-relaxed">{item.content}</p>
+                            <p className="text-xs text-tertiary leading-relaxed">{item.content}</p>
                         </CardContent>
                     </Card>
                 ))}
