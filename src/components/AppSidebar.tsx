@@ -14,38 +14,38 @@ import {
 } from "@/components/ui/sidebar";
 import { useLocation, Link } from "react-router-dom";
 import {
-  dashboard as DashboardIcon,
-  project as ProjectIcon,
-  document as DocumentIcon,
-  users as UsersIcon,
-  settings as SettingsIcon
+  LayoutDashboard,
+  Folder,
+  FileText,
+  Users,
+  Settings,
 } from "lucide-react";
 
 const items = [
   {
     title: "Dashboard",
     url: "/dashboard",
-    icon: DashboardIcon,
+    icon: LayoutDashboard,
   },
   {
     title: "Projects",
     url: "/projects",
-    icon: ProjectIcon,
+    icon: Folder,
   },
   {
     title: "Documents",
     url: "/documents",
-    icon: DocumentIcon,
+    icon: FileText,
   },
   {
     title: "Team",
     url: "/team",
-    icon: UsersIcon,
+    icon: Users,
   },
   {
     title: "Settings",
     url: "/settings",
-    icon: SettingsIcon,
+    icon: Settings,
   },
 ];
 
