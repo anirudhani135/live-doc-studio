@@ -24,25 +24,35 @@ export const useDocuments = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // New: Fetch documents shared with the user
+  // Fixed: Fetch documents shared with the user, with correct array usage
   const fetchSharedDocuments = async () => {
     if (!user) return [];
     setLoading(true);
     try {
-      // Select documents where the user is in the shares table.
-      const { data, error } = await supabase
+      // 1. Get array of shared document IDs
+      const { data: sharedRows, error: shareError } = await supabase
+        .from("document_shares")
+        .select("document_id")
+        .eq("shared_with_user_id", user.id);
+
+      if (shareError) throw shareError;
+      const sharedIds = (sharedRows ?? []).map((r: { document_id: string }) => r.document_id);
+
+      if (!sharedIds.length) {
+        setLoading(false);
+        return [];
+      }
+
+      // 2. Fetch the shared documents
+      const { data: docs, error: docsError } = await supabase
         .from("documents")
         .select("*")
-        .in(
-          "id",
-          supabase
-            .from("document_shares")
-            .select("document_id")
-            .eq("shared_with_user_id", user.id)
-        )
+        .in("id", sharedIds)
         .order("updated_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
+
+      if (docsError) throw docsError;
+      setLoading(false);
+      return docs || [];
     } catch (error) {
       console.error("Error fetching shared documents:", error);
       toast({
@@ -50,9 +60,8 @@ export const useDocuments = () => {
         description: "Failed to fetch shared documents.",
         variant: "destructive",
       });
-      return [];
-    } finally {
       setLoading(false);
+      return [];
     }
   };
 
