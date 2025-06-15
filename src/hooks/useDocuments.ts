@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { logSecurityEvent } from "@/lib/securityLogger";
 
 export type Document = {
   id: string;
@@ -93,6 +94,9 @@ export const useDocuments = () => {
   ) => {
     if (!user) return null;
     try {
+      // Input validation (example, expand as needed)
+      // const validation = documentSchema.safeParse(doc);
+      // if (!validation.success) { ... }
       const { data, error } = await supabase
         .from("documents")
         .insert([
@@ -109,6 +113,11 @@ export const useDocuments = () => {
         title: "Document created",
         description: "Your document was created successfully.",
       });
+      logSecurityEvent({
+        event: "document_created",
+        userId: user.id,
+        detail: { docId: data?.id, title: doc.title },
+      });
       return data as Document;
     } catch (error) {
       console.error("Error creating document:", error);
@@ -116,6 +125,11 @@ export const useDocuments = () => {
         title: "Error",
         description: "Failed to create document.",
         variant: "destructive",
+      });
+      logSecurityEvent({
+        event: "document_create_failed",
+        userId: user?.id,
+        detail: { doc, error },
       });
       return null;
     }
@@ -137,6 +151,11 @@ export const useDocuments = () => {
         title: "Document updated",
         description: "Your document was updated successfully.",
       });
+      logSecurityEvent({
+        event: "document_updated",
+        userId: user?.id,
+        detail: { docId: id, updates },
+      });
       return data as Document;
     } catch (error) {
       console.error("Error updating document:", error);
@@ -144,6 +163,11 @@ export const useDocuments = () => {
         title: "Error",
         description: "Failed to update document.",
         variant: "destructive",
+      });
+      logSecurityEvent({
+        event: "document_update_failed",
+        userId: user?.id,
+        detail: { docId: id, updates, error },
       });
       return null;
     }
@@ -158,12 +182,22 @@ export const useDocuments = () => {
         title: "Document deleted",
         description: "Your document was deleted.",
       });
+      logSecurityEvent({
+        event: "document_deleted",
+        userId: user?.id,
+        detail: { docId: id },
+      });
     } catch (error) {
       console.error("Error deleting document:", error);
       toast({
         title: "Error",
         description: "Failed to delete document.",
         variant: "destructive",
+      });
+      logSecurityEvent({
+        event: "document_delete_failed",
+        userId: user?.id,
+        detail: { docId: id, error },
       });
     }
   };

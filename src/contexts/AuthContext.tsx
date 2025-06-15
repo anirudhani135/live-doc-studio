@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logSecurityEvent } from "@/lib/securityLogger";
 
 // The shape of our AuthContext
 interface AuthContextType {
@@ -55,6 +56,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email,
       password,
     });
+    if (error) {
+      logSecurityEvent({ event: "login_failed", detail: { email, message: error.message } });
+    } else {
+      logSecurityEvent({ event: "login_success", detail: { email } });
+    }
     return { error: error ? { message: error.message } : null };
   };
 
@@ -68,10 +74,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         emailRedirectTo: redirectUrl,
       },
     });
+    if (error) {
+      logSecurityEvent({ event: "signup_failed", detail: { email, message: error.message } });
+    } else {
+      logSecurityEvent({ event: "signup_success", detail: { email } });
+    }
     return { error: error ? { message: error.message } : null };
   };
 
   const signOut = async () => {
+    if (user) {
+      logSecurityEvent({ event: "signout", userId: user.id });
+    }
     await supabase.auth.signOut();
     // user and session will be nulled by the event handler
   };
@@ -84,6 +98,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         redirectTo: `${window.location.origin}/`,
       },
     });
+    if (error) {
+      logSecurityEvent({ event: "google_login_failed", detail: { message: error.message } });
+    } else {
+      logSecurityEvent({ event: "google_login_attempt" });
+    }
     return { error: error ? { message: error.message } : null };
   };
 
