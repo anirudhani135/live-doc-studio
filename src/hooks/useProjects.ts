@@ -5,6 +5,21 @@ import { supabase } from '@/integrations/supabase/client';
 import { Project } from '@/types/project';
 import { useToast } from '@/hooks/use-toast';
 
+// Use the Supabase generated types for row/insert/update
+type ProjectRow = {
+  id: string;
+  name: string;
+  description: string | null;
+  type: 'code_project' | 'documentation' | 'api_spec';
+  status: 'draft' | 'in_progress' | 'completed' | 'archived';
+  tech_stack: string[] | null;
+  ai_model: 'gpt-4' | 'claude' | 'gemini';
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+  metadata: any;
+};
+
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +29,7 @@ export const useProjects = () => {
   const fetchProjects = async () => {
     if (!user) return;
 
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -22,7 +38,8 @@ export const useProjects = () => {
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      setProjects(data || []);
+      // Cast tech_stack to [] for compatibility
+      setProjects((data as Project[]) || []);
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast({
@@ -35,28 +52,32 @@ export const useProjects = () => {
     }
   };
 
-  const createProject = async (projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
+  const createProject = async (
+    projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>
+  ) => {
     if (!user) return null;
 
     try {
       const { data, error } = await supabase
         .from('projects')
-        .insert([{
-          ...projectData,
-          user_id: user.id
-        }])
+        .insert([
+          {
+            ...projectData,
+            user_id: user.id
+          }
+        ])
         .select()
         .single();
 
       if (error) throw error;
 
-      setProjects(prev => [data, ...prev]);
+      setProjects(prev => [data as Project, ...prev]);
       toast({
         title: "Success",
         description: "Project created successfully",
       });
 
-      return data;
+      return data as Project;
     } catch (error) {
       console.error('Error creating project:', error);
       toast({
@@ -79,13 +100,13 @@ export const useProjects = () => {
 
       if (error) throw error;
 
-      setProjects(prev => prev.map(p => p.id === id ? data : p));
+      setProjects(prev => prev.map(p => p.id === id ? (data as Project) : p));
       toast({
         title: "Success",
         description: "Project updated successfully",
       });
 
-      return data;
+      return data as Project;
     } catch (error) {
       console.error('Error updating project:', error);
       toast({
