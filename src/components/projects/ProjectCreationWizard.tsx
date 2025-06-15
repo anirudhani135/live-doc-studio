@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,6 +23,7 @@ import {
 } from 'lucide-react';
 import { aiContentService } from '@/lib/ai-content-service';
 import { useToast } from '@/hooks/use-toast';
+import { ProjectQuestionnaire } from '@/types/questionnaire';
 
 interface ProjectCreationWizardProps {
   onComplete: (projectData: any) => void;
@@ -35,7 +35,7 @@ const ProjectCreationWizard: React.FC<ProjectCreationWizardProps> = ({ onComplet
   const [projectData, setProjectData] = useState({
     description: '',
     selectedModel: 'gpt-4',
-    questionnaire: {},
+    questionnaire: {} as ProjectQuestionnaire,
     analysis: null,
     documentation: null,
     refinements: [],
@@ -294,7 +294,7 @@ const ProjectCreationWizard: React.FC<ProjectCreationWizardProps> = ({ onComplet
                     <label className="text-sm font-medium">{q.question}</label>
                     {q.type === 'select' ? (
                       <Select
-                        value={projectData.questionnaire[q.id] || ''}
+                        value={projectData.questionnaire[q.id as keyof ProjectQuestionnaire] || ''}
                         onValueChange={(value) => setProjectData(prev => ({
                           ...prev,
                           questionnaire: { ...prev.questionnaire, [q.id]: value }
@@ -313,7 +313,7 @@ const ProjectCreationWizard: React.FC<ProjectCreationWizardProps> = ({ onComplet
                       </Select>
                     ) : (
                       <Input
-                        value={projectData.questionnaire[q.id] || ''}
+                        value={projectData.questionnaire[q.id as keyof ProjectQuestionnaire] || ''}
                         onChange={(e) => setProjectData(prev => ({
                           ...prev,
                           questionnaire: { ...prev.questionnaire, [q.id]: e.target.value }
