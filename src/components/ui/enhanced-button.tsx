@@ -44,12 +44,11 @@ export interface EnhancedButtonProps
   extends Omit<HTMLMotionProps<"button">, "size">,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  children: React.ReactNode;
 }
 
 const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
   ({ className, variant, size, effect, asChild = false, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : motion.button;
-    
     const buttonMotionProps = {
       whileHover: { scale: 1.02 },
       whileTap: { scale: 0.98 },

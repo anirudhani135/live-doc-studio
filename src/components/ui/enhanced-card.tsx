@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -16,18 +15,6 @@ const cardVariants = {
     boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)"
   },
   tap: { scale: 0.98 }
-};
-
-const cardTransition = {
-  type: "spring" as const,
-  stiffness: 300,
-  damping: 30
-};
-
-const hoverTransition = {
-  type: "spring" as const,
-  stiffness: 400,
-  damping: 30
 };
 
 const EnhancedCard = React.forwardRef<
@@ -56,8 +43,9 @@ const EnhancedCard = React.forwardRef<
       whileHover={animateOnHover ? "hover" : undefined}
       whileTap={variant === "interactive" ? "tap" : undefined}
       transition={{
-        animate: cardTransition,
-        hover: hoverTransition
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 30
       }}
       {...props}
     >

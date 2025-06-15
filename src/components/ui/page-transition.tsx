@@ -41,21 +41,6 @@ const staggerContainer = {
   }
 };
 
-const staggerTransitions = {
-  in: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  },
-  out: {
-    transition: {
-      staggerChildren: 0.05,
-      staggerDirection: -1
-    }
-  }
-};
-
 export function PageTransition({ children }: PageTransitionProps) {
   const location = useLocation();
 
@@ -75,7 +60,10 @@ export function PageTransition({ children }: PageTransitionProps) {
           initial="initial"
           animate="in"
           exit="out"
-          transition={staggerTransitions}
+          transition={{
+            staggerChildren: 0.1,
+            delayChildren: 0.2
+          }}
         >
           {children}
         </motion.div>
