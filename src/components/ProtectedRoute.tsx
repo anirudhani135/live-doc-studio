@@ -8,9 +8,17 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+const isDevBypass = () =>
+  typeof window !== "undefined" && (window as any).__DEV_AUTH_BYPASS__;
+
+// If dev bypass is enabled, always return the children without any checks.
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
+
+  if (isDevBypass()) {
+    return <>{children}</>;
+  }
 
   if (loading) {
     return (
