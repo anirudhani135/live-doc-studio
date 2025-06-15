@@ -120,22 +120,18 @@ export const enhancedToast = {
     return sonnerToast.loading(title);
   },
   
-  promise: <T>(
+  promise: function<T>(
     promise: Promise<T>,
-    {
-      loading,
-      success,
-      error,
-    }: {
+    options: {
       loading: string;
       success: string | ((data: T) => string);
       error: string | ((error: any) => string);
     }
-  ) => {
+  ) {
     return sonnerToast.promise(promise, {
-      loading,
-      success,
-      error,
+      loading: options.loading,
+      success: options.success,
+      error: options.error,
     });
   }
 };
