@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { MetricCard } from "@/components/ui/metric-card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
@@ -120,8 +119,8 @@ const quickActions = [
   { 
     label: "Starter Kits", 
     icon: <Box size={20} />, 
-    iconBg: "bg-amber-50", 
-    iconColor: "text-amber-600",
+    iconBg: "bg-slate-50", 
+    iconColor: "text-slate-600",
     description: "Template library"
   },
   { 
