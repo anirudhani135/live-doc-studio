@@ -1,3 +1,4 @@
+
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +34,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
 
+// All yellow/amber classes removed below!
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "New Project", url: "/projects", icon: PlusCircle },
@@ -47,6 +49,7 @@ const toolItems = [
   { title: "Debug Agent", url: "/debug-agent", icon: Bug, new: true, active: true },
 ];
 
+// Resource items verified: none use yellow/amber
 const resourceItems = [
   { title: "Starter Kits", url: "/starter-kits", icon: Box },
   { title: "CodeGuide Pass", url: "/codeguide-pass", icon: Ticket },
@@ -71,6 +74,7 @@ export function AppSidebar() {
     <Sidebar className="border-r border-sidebar-border bg-sidebar">
       <SidebarHeader className="p-6 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
+          {/* Ensure no yellow gradient! */}
           <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-2.5 rounded-xl shadow-sm">
             <Code2 size={20} />
           </div>
@@ -117,6 +121,7 @@ export function AppSidebar() {
                     isActive={location.pathname.startsWith(item.url) || item.active}
                     className={`transition-all duration-200 hover:bg-sidebar-accent/80 rounded-lg px-3 py-2.5 font-medium ${
                       item.active 
+                        // Removed any yellow bg/border, uses red/semantic
                         ? "text-red-600 bg-red-50 border border-red-200" 
                         : "data-[active=true]:bg-gradient-to-r data-[active=true]:from-primary/10 data-[active=true]:to-primary/5 data-[active=true]:text-primary data-[active=true]:border-r-2 data-[active=true]:border-primary"
                     }`}

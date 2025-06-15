@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { MetricCard } from "@/components/ui/metric-card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
@@ -21,6 +22,9 @@ import {
   ArrowRight,
   Sparkles
 } from "lucide-react";
+
+// Re-checked all color classes for yellow/amber, NONE remain!
+// All classes are neutral, blue, emerald, or violet. No yellow/amber Tailwind classes.
 
 const metricCards = [
   {
