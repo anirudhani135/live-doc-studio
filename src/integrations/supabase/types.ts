@@ -9,6 +9,83 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      document_shares: {
+        Row: {
+          created_at: string
+          document_id: string
+          id: string
+          role: string
+          shared_with_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_id: string
+          id?: string
+          role?: string
+          shared_with_user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_id?: string
+          id?: string
+          role?: string
+          shared_with_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_shares_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          content: string | null
+          created_at: string
+          description: string | null
+          doc_type: string
+          file_url: string | null
+          id: string
+          metadata: Json | null
+          project_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          doc_type?: string
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          doc_type?: string
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           ai_model: string
