@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { ThemeProvider } from "@/components/theme-provider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
@@ -24,33 +23,31 @@ function AppContent() {
 
   if (isLandingPage) {
     return (
-      <div className="min-h-screen bg-white">
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/documents" element={<Documents />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/documents" element={<Documents />} />
+        <Route path="/team" element={<Team />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     );
   }
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-white">
+      <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
-        <SidebarInset className="flex-1 bg-white">
-          <div className="flex flex-col min-h-screen bg-white">
-            <header className="w-full flex items-center p-4 border-b border-gray-200 bg-white">
-              <SidebarTrigger className="hover:bg-gray-100 transition-colors" />
-              <span className="text-xl font-bold ml-3 tracking-tight bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+        <SidebarInset>
+          <div className="flex flex-col min-h-screen">
+            <header className="w-full flex items-center p-2 border-b">
+              <SidebarTrigger />
+              <span className="text-xl font-bold ml-2 tracking-tight text-primary">
                 Livedoc
               </span>
             </header>
-            <main className="flex-1 overflow-hidden bg-white">
+            <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -69,19 +66,15 @@ function AppContent() {
 }
 
 const App = () => (
-  <div className="bg-white min-h-screen">
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="livedoc-ui-theme">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </div>
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 export default App;
