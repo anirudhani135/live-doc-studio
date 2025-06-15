@@ -16,6 +16,8 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import Landing from "./pages/Landing";
 import { PageTransition } from "./components/ui/page-transition";
 import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AuthPage from "./components/auth/AuthPage";
 
 const queryClient = new QueryClient();
 
@@ -28,11 +30,47 @@ function AppContent() {
       <PageTransition>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/documents" element={<Documents />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/projects" 
+            element={
+              <ProtectedRoute>
+                <Projects />
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path="/documents" 
+            element={
+              <ProtectedRoute>
+                <Documents />
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path="/team" 
+            element={
+              <ProtectedRoute>
+                <Team />
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path="/settings" 
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
@@ -55,11 +93,47 @@ function AppContent() {
               <PageTransition>
                 <Routes>
                   <Route path="/" element={<Landing />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/projects" element={<Projects />} />
-                  <Route path="/documents" element={<Documents />} />
-                  <Route path="/team" element={<Team />} />
-                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/projects" 
+                    element={
+                      <ProtectedRoute>
+                        <Projects />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route 
+                    path="/documents" 
+                    element={
+                      <ProtectedRoute>
+                        <Documents />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route 
+                    path="/team" 
+                    element={
+                      <ProtectedRoute>
+                        <Team />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route 
+                    path="/settings" 
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </PageTransition>
