@@ -39,15 +39,15 @@ function AppContent() {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className="flex-1">
           <div className="flex flex-col min-h-screen">
-            <header className="w-full flex items-center p-2 border-b">
-              <SidebarTrigger />
-              <span className="text-xl font-bold ml-2 tracking-tight text-primary">
+            <header className="w-full flex items-center p-4 border-b border-border bg-surface-elevated/50 backdrop-blur-sm">
+              <SidebarTrigger className="hover:bg-muted/80 transition-colors" />
+              <span className="text-xl font-bold ml-3 tracking-tight bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                 Livedoc
               </span>
             </header>
-            <main className="flex-1">
+            <main className="flex-1 overflow-hidden">
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/dashboard" element={<Dashboard />} />

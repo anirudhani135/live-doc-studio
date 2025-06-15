@@ -27,6 +27,7 @@ import {
   Sun,
   LogOut,
   Code2,
+  Sparkles,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -52,34 +53,40 @@ const resourceItems = [
 ];
 
 const NewBadge = () => (
-    <span className="bg-green-100 text-green-800 text-xs font-medium px-1.5 py-0.5 rounded">New</span>
+  <span className="bg-emerald-50 text-emerald-700 text-xs font-medium px-2 py-0.5 rounded-full border border-emerald-200">
+    New
+  </span>
 );
 
 export function AppSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar>
-      <SidebarHeader className="p-4 border-b">
-          <div className="flex items-center gap-3">
-              <div className="bg-blue-600 text-white p-2 rounded-lg">
-                  <Code2 size={20} />
-              </div>
-              <h1 className="text-xl font-bold text-slate-800">CodeGuide</h1>
+    <Sidebar className="border-r border-sidebar-border bg-sidebar">
+      <SidebarHeader className="p-6 border-b border-sidebar-border">
+        <div className="flex items-center gap-3">
+          <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-2.5 rounded-xl shadow-sm">
+            <Code2 size={20} />
           </div>
+          <div>
+            <h1 className="text-xl font-bold text-sidebar-foreground">Livedoc</h1>
+            <p className="text-xs text-sidebar-foreground/70">AI Documentation Platform</p>
+          </div>
+        </div>
       </SidebarHeader>
-      <SidebarContent className="p-2">
+
+      <SidebarContent className="p-3">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
                     isActive={location.pathname === item.url}
-                    className="[&[data-active=true]]:bg-blue-50 [&[data-active=true]]:text-blue-600 font-medium"
+                    className="transition-all duration-200 hover:bg-sidebar-accent/80 data-[active=true]:bg-gradient-to-r data-[active=true]:from-primary/10 data-[active=true]:to-primary/5 data-[active=true]:text-primary data-[active=true]:border-r-2 data-[active=true]:border-primary font-medium rounded-lg px-3 py-2.5"
                   >
-                    <Link to={item.url}>
+                    <Link to={item.url} className="flex items-center gap-3">
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
                     </Link>
@@ -91,18 +98,25 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 mt-4">CODEGUIDE TOOLS</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider px-3 mt-6 mb-3 flex items-center gap-2">
+            <Sparkles className="h-3 w-3" />
+            AI Tools
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {toolItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
                     isActive={location.pathname.startsWith(item.url) || item.active}
-                    className={item.active ? "text-red-600 bg-red-50 font-medium" : "[&[data-active=true]]:bg-blue-50 [&[data-active=true]]:text-blue-600 font-medium"}
+                    className={`transition-all duration-200 hover:bg-sidebar-accent/80 rounded-lg px-3 py-2.5 font-medium ${
+                      item.active 
+                        ? "text-red-600 bg-red-50 border border-red-200" 
+                        : "data-[active=true]:bg-gradient-to-r data-[active=true]:from-primary/10 data-[active=true]:to-primary/5 data-[active=true]:text-primary data-[active=true]:border-r-2 data-[active=true]:border-primary"
+                    }`}
                   >
                     <Link to={item.url} className="flex justify-between items-center w-full">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <item.icon className="h-5 w-5" />
                         <span>{item.title}</span>
                       </div>
@@ -116,17 +130,19 @@ export function AppSidebar() {
         </SidebarGroup>
         
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 mt-4">RESOURCES</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider px-3 mt-6 mb-3">
+            Resources
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {resourceItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
                     isActive={location.pathname.startsWith(item.url)}
-                    className="[&[data-active=true]]:bg-blue-50 [&[data-active=true]]:text-blue-600 font-medium"
+                    className="transition-all duration-200 hover:bg-sidebar-accent/80 data-[active=true]:bg-gradient-to-r data-[active=true]:from-primary/10 data-[active=true]:to-primary/5 data-[active=true]:text-primary data-[active=true]:border-r-2 data-[active=true]:border-primary font-medium rounded-lg px-3 py-2.5"
                   >
-                    <Link to={item.url}>
+                    <Link to={item.url} className="flex items-center gap-3">
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
                     </Link>
@@ -137,22 +153,27 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-4 border-t flex flex-col gap-3">
-          <Button variant="ghost" className="w-full justify-start gap-2 text-slate-600 font-medium">
-              <Sun size={20} />
-              <span>Light</span>
-          </Button>
-          <div className="px-2 py-1">
-              <p className="text-sm font-semibold text-slate-800">Godfather Member</p>
-              <div className="w-full bg-slate-200 rounded-full h-1 mt-1.5">
-                  <div className="bg-blue-600 h-1 rounded-full" style={{ width: '75%' }}></div>
-              </div>
+
+      <SidebarFooter className="p-4 border-t border-sidebar-border space-y-3">
+        <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground font-medium hover:bg-sidebar-accent/80 rounded-lg px-3 py-2.5">
+          <Sun size={18} />
+          <span>Light Mode</span>
+        </Button>
+        
+        <div className="px-3 py-2">
+          <p className="text-sm font-semibold text-sidebar-foreground mb-2">Pro Member</p>
+          <div className="w-full bg-sidebar-accent rounded-full h-2 overflow-hidden">
+            <div className="bg-gradient-to-r from-primary to-primary/80 h-2 rounded-full transition-all duration-500" style={{ width: '75%' }}></div>
           </div>
-          <Separator className="my-1" />
-          <Button variant="ghost" className="w-full justify-start gap-2 text-slate-600 font-medium">
-              <LogOut size={20} />
-              <span>Logout</span>
-          </Button>
+          <p className="text-xs text-sidebar-foreground/60 mt-1">75% of quota used</p>
+        </div>
+        
+        <Separator className="my-2 bg-sidebar-border" />
+        
+        <Button variant="ghost" className="w-full justify-start gap-3 text-sidebar-foreground font-medium hover:bg-sidebar-accent/80 rounded-lg px-3 py-2.5">
+          <LogOut size={18} />
+          <span>Sign Out</span>
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
