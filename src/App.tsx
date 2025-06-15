@@ -24,31 +24,33 @@ function AppContent() {
 
   if (isLandingPage) {
     return (
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/documents" element={<Documents />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <div className="min-h-screen bg-white">
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/documents" element={<Documents />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
     );
   }
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-white">
         <AppSidebar />
-        <SidebarInset className="flex-1">
-          <div className="flex flex-col min-h-screen">
-            <header className="w-full flex items-center p-4 border-b border-border bg-surface-elevated/50 backdrop-blur-sm">
-              <SidebarTrigger className="hover:bg-muted/80 transition-colors" />
-              <span className="text-xl font-bold ml-3 tracking-tight bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+        <SidebarInset className="flex-1 bg-white">
+          <div className="flex flex-col min-h-screen bg-white">
+            <header className="w-full flex items-center p-4 border-b border-gray-200 bg-white">
+              <SidebarTrigger className="hover:bg-gray-100 transition-colors" />
+              <span className="text-xl font-bold ml-3 tracking-tight bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                 Livedoc
               </span>
             </header>
-            <main className="flex-1 overflow-hidden">
+            <main className="flex-1 overflow-hidden bg-white">
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -67,17 +69,19 @@ function AppContent() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="light" storageKey="livedoc-ui-theme">
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <div className="bg-white min-h-screen">
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="light" storageKey="livedoc-ui-theme">
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </div>
 );
 
 export default App;

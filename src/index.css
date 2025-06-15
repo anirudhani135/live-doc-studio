@@ -1,40 +1,36 @@
-/* == DEBUG NEUTRALIZER: If you see yellow, this section should help debug! == */
-/* REMOVE any yellow background with an explicit fail-safe! */
-html, body, #root, #app {
-  background-color: hsl(var(--background)) !important;
-  background: hsl(var(--background)) !important;
-  /* The !important here is just to forcibly override any previous yellow. */
+
+/* CRITICAL: Complete yellow elimination system */
+* {
+  background-color: inherit !important;
 }
 
-/* Remove any style with background yellow if coming from old code or browser extension */
-html, body, #root, #app {
-  /* No allowed yellow, block common yellow color codes */
-  filter: none !important;
+html, body, #root, #app, main, div {
+  background-color: white !important;
+  background: white !important;
 }
-body, html {
-  /* Remove user agent outline/yellow highlight for a11y checks */
-  caret-color: auto;
+
+/* Force remove any yellow from anywhere */
+*[style*="yellow"], *[style*="amber"], *[class*="yellow"], *[class*="amber"] {
+  background-color: white !important;
+  background: white !important;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @layer base {
   html {
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    /* Remove any default background! */
-    background-color: hsl(var(--background));
-    background: hsl(var(--background));
+    background-color: white !important;
+    background: white !important;
   }
 
   :root {
-    /* Enhanced color system - Light Theme */
-    --background: 250 250 250;
+    /* Light Theme - All neutral colors, NO YELLOW */
+    --background: 255 255 255;
     --foreground: 15 23 42;
 
     --card: 255 255 255;
@@ -64,14 +60,12 @@ body, html {
 
     --radius: 0.75rem;
 
-    /* Semantic color tokens */
     --success: 34 197 94;
-    --warning: 148 163 184; /* KEEP AS GRAY, NO YELLOW */
+    --warning: 148 163 184;
     --info: 59 130 246;
     --surface-elevated: 255 255 255;
     --surface-sunken: 241 245 249;
 
-    /* Sidebar colors */
     --sidebar-background: 255 255 255;
     --sidebar-foreground: 51 65 85;
     --sidebar-primary: 59 130 246;
@@ -83,7 +77,6 @@ body, html {
   }
 
   .dark {
-    /* Dark Theme Colors */
     --background: 2 6 23;
     --foreground: 248 250 252;
 
@@ -113,7 +106,7 @@ body, html {
     --ring: 59 130 246;
 
     --success: 34 197 94;
-    --warning: 100 116 139; /* STILL NEUTRAL, NO YELLOW */
+    --warning: 100 116 139;
     --info: 59 130 246;
     --surface-elevated: 30 41 59;
     --surface-sunken: 15 23 42;
@@ -132,22 +125,22 @@ body, html {
 @layer base {
   * {
     @apply border-border;
+    background-color: inherit;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-    /* REMOVE any hardcoded yellow background! */
-    background-color: hsl(var(--background));
-    background: hsl(var(--background));
+    background-color: white !important;
+    background: white !important;
   }
 
-  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
+    background-color: white !important;
+    background: white !important;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -167,11 +160,7 @@ body, html {
   }
 }
 
-/* WARNING: DO NOT ADD ANY "background: yellow" or "background-color: yellow" */
-/* Remove any such global overrides! No !important yellow styles allowed. */
-
 @layer components {
-  /* Enhanced animations */
   .page-transition {
     animation: pageEnter 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
@@ -232,7 +221,6 @@ body, html {
   }
 }
 
-/* ... keep existing keyframes and animations the same ... */
 @keyframes pageEnter {
   from {
     opacity: 0;
@@ -289,7 +277,6 @@ body, html {
   animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Stagger animations */
 .stagger-container > * {
   animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   animation-fill-mode: both;
@@ -301,3 +288,19 @@ body, html {
 .stagger-container > *:nth-child(4) { animation-delay: 0.4s; }
 .stagger-container > *:nth-child(5) { animation-delay: 0.5s; }
 .stagger-container > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* Force override any external yellow */
+.bg-yellow-50,
+.bg-yellow-100,
+.bg-yellow-200,
+.bg-yellow-300,
+.bg-yellow-400,
+.bg-yellow-500,
+.bg-amber-50,
+.bg-amber-100,
+.bg-amber-200,
+.bg-amber-300,
+.bg-amber-400,
+.bg-amber-500 {
+  background-color: white !important;
+}
