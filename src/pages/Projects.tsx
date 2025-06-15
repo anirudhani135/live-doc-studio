@@ -1,14 +1,15 @@
 
 import { HelpGuide } from "@/components/HelpGuide";
-import { Button } from "@/components/ui/button";
-import { FileText, Sparkles, Plus, Grid } from "lucide-react";
 import { useState } from "react";
 import { useProjects } from "@/hooks/useProjects";
 import { Project } from "@/types/project";
-import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectDialog from "@/components/projects/ProjectDialog";
 import ProjectCreationWizard from "@/components/projects/ProjectCreationWizard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import ProjectsHeader from "@/components/projects/ProjectsHeader";
+import ProjectsBanner from "@/components/projects/ProjectsBanner";
+import ProjectsEmptyState from "@/components/projects/ProjectsEmptyState";
+import ProjectsGrid from "@/components/projects/ProjectsGrid";
 
 const Projects = () => {
   const [showProjectDialog, setShowProjectDialog] = useState(false);
@@ -18,6 +19,7 @@ const Projects = () => {
 
   const { projects, loading, createProject, updateProject, deleteProject } = useProjects();
 
+  // Project handlers
   const handleEditProject = (project: Project) => {
     setSelectedProject(project);
     setShowProjectDialog(true);
@@ -77,6 +79,7 @@ const Projects = () => {
     console.log('Opening project:', project);
   };
 
+  // Show wizard if active
   if (showWizard) {
     return (
       <ProjectCreationWizard
@@ -91,58 +94,16 @@ const Projects = () => {
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="flex items-center justify-between mb-6">
-              <TabsList>
-                <TabsTrigger value="projects" className="flex items-center gap-2">
-                  <Grid className="h-4 w-4" />
-                  My Projects ({projects.length})
-                </TabsTrigger>
-              </TabsList>
-              
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={handleCreateProject}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Quick Create
-                </Button>
-                <Button onClick={handleStartWizard} className="bg-blue-600 hover:bg-blue-700">
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  AI Project Wizard
-                </Button>
-              </div>
-            </div>
+            <ProjectsHeader
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              projectCount={projects.length}
+              onCreateProject={handleCreateProject}
+              onStartWizard={handleStartWizard}
+            />
 
             <TabsContent value="projects" className="space-y-6">
-              {/* AI Project Wizard Banner */}
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-bold mb-2">Create Your Next Project with AI</h2>
-                    <p className="mb-4 opacity-90">
-                      Let our AI guide you through a comprehensive 9-step project creation process
-                    </p>
-                    <div className="flex gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Sparkles className="h-4 w-4" />
-                        AI-Powered Analysis
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <FileText className="h-4 w-4" />
-                        Auto Documentation
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Grid className="h-4 w-4" />
-                        Project Monitoring
-                      </div>
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={handleStartWizard}
-                    className="bg-white text-blue-600 hover:bg-gray-100"
-                  >
-                    Start AI Wizard
-                  </Button>
-                </div>
-              </div>
+              <ProjectsBanner onStartWizard={handleStartWizard} />
 
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-slate-800">My Projects</h2>
@@ -151,44 +112,19 @@ const Projects = () => {
                 </div>
               </div>
 
-              {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="animate-pulse">
-                      <div className="h-48 bg-gray-200 rounded-lg"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : projects.length === 0 ? (
-                <div className="text-center py-12">
-                  <Sparkles className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No projects yet</h3>
-                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                    Create your first AI-powered project to get started with intelligent documentation and collaboration
-                  </p>
-                  <div className="flex gap-3 justify-center">
-                    <Button onClick={handleStartWizard} className="bg-blue-600 hover:bg-blue-700">
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Start AI Wizard
-                    </Button>
-                    <Button variant="outline" onClick={handleCreateProject}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Quick Create
-                    </Button>
-                  </div>
-                </div>
+              {projects.length === 0 && !loading ? (
+                <ProjectsEmptyState
+                  onStartWizard={handleStartWizard}
+                  onCreateProject={handleCreateProject}
+                />
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {projects.map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      onEdit={handleEditProject}
-                      onDelete={handleDeleteProject}
-                      onOpen={handleOpenProject}
-                    />
-                  ))}
-                </div>
+                <ProjectsGrid
+                  projects={projects}
+                  loading={loading}
+                  onEdit={handleEditProject}
+                  onDelete={handleDeleteProject}
+                  onOpen={handleOpenProject}
+                />
               )}
             </TabsContent>
           </Tabs>
