@@ -1,4 +1,6 @@
 
+// Responsive padding / layout tweaks for card
+
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -44,12 +46,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-md transition-shadow flex flex-col h-full">
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             {getTypeIcon(project.type)}
-            <CardTitle className="text-lg">{project.name}</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{project.name}</CardTitle>
           </div>
           <Badge variant={getStatusColor(project.status)} className="text-xs">
             {project.status.replace('_', ' ')}
@@ -60,7 +62,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
         </CardDescription>
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 flex-1 flex flex-col justify-between">
         <div className="flex flex-wrap gap-1">
           {project.tech_stack?.slice(0, 3).map((tech) => (
             <Badge key={tech} variant="outline" className="text-xs">
@@ -74,12 +76,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
           )}
         </div>
         
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-muted-foreground gap-1">
           <span>AI Model: {project.ai_model.toUpperCase()}</span>
           <span>{formatDistanceToNow(new Date(project.updated_at))} ago</span>
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button 
             variant="default" 
             size="sm" 
@@ -93,6 +95,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
             variant="outline" 
             size="sm" 
             onClick={() => onEdit(project)}
+            className="flex-1 sm:flex-none"
           >
             <Settings className="h-3 w-3" />
           </Button>
@@ -100,7 +103,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
             variant="outline" 
             size="sm" 
             onClick={() => onDelete(project.id)}
-            className="text-red-600 hover:text-red-700"
+            className="text-red-600 hover:text-red-700 flex-1 sm:flex-none"
           >
             <Trash2 className="h-3 w-3" />
           </Button>

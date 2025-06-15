@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,21 +34,21 @@ const Dashboard = () => {
   const recentDocuments = documents.slice(0, 4);
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">
             Welcome back! Here's what's happening with your projects.
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Button variant="outline" className="flex-1 sm:flex-none">
             <FileText className="h-4 w-4 mr-2" />
             New Document
           </Button>
-          <Button>
+          <Button className="flex-1 sm:flex-none">
             <Plus className="h-4 w-4 mr-2" />
             New Project
           </Button>
@@ -57,7 +56,7 @@ const Dashboard = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -124,12 +123,12 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Projects */}
         <Card className="lg:col-span-2">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <div>
               <CardTitle>Recent Projects</CardTitle>
               <CardDescription>Your latest project activity</CardDescription>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="w-full md:w-auto">
               View All
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
@@ -137,19 +136,22 @@ const Dashboard = () => {
           <CardContent className="space-y-4">
             {recentProjects.length > 0 ? (
               recentProjects.map((project) => (
-                <div key={project.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center gap-3">
+                <div
+                  key={project.id}
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-2"
+                >
+                  <div className="flex items-center gap-3 w-full sm:w-auto">
                     <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                       <Sparkles className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
                       <h4 className="font-medium">{project.name}</h4>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {project.description?.substring(0, 50)}...
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                     <Badge variant={project.status === 'completed' ? 'default' : 'secondary'}>
                       {project.status}
                     </Badge>
@@ -198,7 +200,6 @@ const Dashboard = () => {
               </Button>
             </CardContent>
           </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>Recent Documents</CardTitle>

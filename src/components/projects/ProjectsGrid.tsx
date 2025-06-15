@@ -1,4 +1,6 @@
 
+// Ensure grid is responsive, reflows at standard breakpoints
+
 import React from 'react';
 import { Project } from '@/types/project';
 import ProjectCard from './ProjectCard';
@@ -21,10 +23,10 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({
   // Loading skeleton
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[...Array(6)].map((_, i) => (
           <div key={i} className="animate-pulse">
-            <div className="h-48 bg-gray-200 rounded-lg"></div>
+            <div className="h-40 sm:h-48 bg-gray-200 rounded-lg" />
           </div>
         ))}
       </div>
@@ -33,7 +35,7 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({
 
   // Projects grid
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {projects.map((project) => (
         <ProjectCard
           key={project.id}

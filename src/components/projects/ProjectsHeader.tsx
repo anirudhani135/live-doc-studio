@@ -1,4 +1,6 @@
 
+// Make header and tab/buttons responsive, stack on mobile
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -20,22 +22,24 @@ const ProjectsHeader: React.FC<ProjectsHeaderProps> = ({
   onStartWizard
 }) => {
   return (
-    <div className="flex items-center justify-between mb-6">
-      <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-        <TabsList>
-          <TabsTrigger value="projects" className="flex items-center gap-2">
-            <Grid className="h-4 w-4" />
-            My Projects ({projectCount})
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div className="w-full md:w-auto">
+        <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+          <TabsList className="w-full md:w-auto">
+            <TabsTrigger value="projects" className="flex items-center gap-2 w-full md:w-auto">
+              <Grid className="h-4 w-4" />
+              My Projects ({projectCount})
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
       
-      <div className="flex gap-2">
-        <Button variant="outline" onClick={onCreateProject}>
+      <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+        <Button variant="outline" onClick={onCreateProject} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Quick Create
         </Button>
-        <Button onClick={onStartWizard} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={onStartWizard} className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
           <Sparkles className="h-4 w-4 mr-2" />
           AI Project Wizard
         </Button>
