@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useDocuments } from "@/hooks/useDocuments";
 import DocumentList from "@/components/documents/DocumentList";
 import DocumentDialog from "@/components/documents/DocumentDialog";
+import DocumentEditor from "@/components/documents/DocumentEditor";
 
 const Documents = () => {
   const {
@@ -18,6 +19,7 @@ const Documents = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [editingDoc, setEditingDoc] = useState(null);
 
   const handleNewDoc = () => {
     setSelectedDoc(null);
@@ -31,7 +33,6 @@ const Documents = () => {
 
   const handleSave = async (docData) => {
     if (selectedDoc) {
-      // Editing existing doc
       await updateDocument(selectedDoc.id, docData);
     } else {
       await createDocument(docData);
@@ -46,9 +47,33 @@ const Documents = () => {
   };
 
   const handleOpen = (doc) => {
-    // TODO: Implement detailed document view or editor
-    alert(`Open: ${doc.title}`);
+    setEditingDoc(doc);
   };
+
+  const handleEditorSave = async (content: string, metadata?: any) => {
+    if (editingDoc) {
+      await updateDocument(editingDoc.id, { 
+        content, 
+        metadata,
+        title: editingDoc.title 
+      });
+      setEditingDoc(null);
+    }
+  };
+
+  const handleBackToList = () => {
+    setEditingDoc(null);
+  };
+
+  if (editingDoc) {
+    return (
+      <DocumentEditor
+        document={editingDoc}
+        onSave={handleEditorSave}
+        onBack={handleBackToList}
+      />
+    );
+  }
 
   return (
     <div className="p-8 flex flex-col min-h-[80vh] max-w-6xl mx-auto">
