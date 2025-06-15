@@ -1,8 +1,6 @@
-
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Edit, Trash2, Bolt, Folder, Clock, Plus, Code2, Bug, BarChart2, Box, Ticket, RefreshCw } from "lucide-react";
-import { AnalyticsChart } from "@/components/dashboard/AnalyticsChart";
 
 const metricCards = [
   {
@@ -103,8 +101,6 @@ const Dashboard = () => {
           </Card>
         ))}
       </div>
-
-      <AnalyticsChart />
 
       {/* Lower section: Recents + Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
