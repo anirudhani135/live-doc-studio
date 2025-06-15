@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +12,7 @@ import Team from "./pages/Team";
 import Settings from "./pages/Settings";
 import { AppSidebar } from "./components/AppSidebar";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import Landing from "./pages/Landing";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +35,7 @@ const App = () => (
                 </header>
                 <main className="flex-1">
                   <Routes>
-                    <Route path="/" element={<Index />} />
+                    <Route path="/" element={<Landing />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/projects" element={<Projects />} />
                     <Route path="/documents" element={<Documents />} />
@@ -55,4 +55,3 @@ const App = () => (
 );
 
 export default App;
-
