@@ -13,17 +13,26 @@ interface TestimonialCardProps {
 
 export function TestimonialCard({ name, role, quote, company, avatar, logo }: TestimonialCardProps) {
   return (
-    <Card className="border border-[#f1f5f9] bg-white/90 rounded-2xl shadow flex flex-col h-full">
-      <CardHeader className="flex flex-col items-center justify-center pt-8 pb-2">
-        <Avatar>
-          <img src={avatar} alt={name} className="rounded-full h-14 w-14 object-cover" />
-        </Avatar>
-        <div className="mt-3 font-bold">{name}</div>
-        <div className="text-sm text-[#475569] font-medium">{role} &mdash; <span className="font-normal">{company}</span></div>
-      </CardHeader>
-      <CardContent className="flex-1 flex flex-col justify-between pt-0 pb-6 items-center text-center">
-        <p className="text-base italic text-[#0f172a] mt-1 mb-2">“{quote}”</p>
-        <img src={logo} alt={company} className="h-7 mt-2 opacity-80" />
+    <Card className="h-full bg-white border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 rounded-xl">
+      <CardContent className="p-6">
+        <div className="flex items-center space-x-4 mb-4">
+          <Avatar className="w-12 h-12">
+            <img src={avatar} alt={name} className="rounded-full object-cover" />
+          </Avatar>
+          <div>
+            <div className="font-semibold text-gray-900">{name}</div>
+            <div className="text-sm text-gray-600">{role}</div>
+            <div className="text-sm text-gray-500">{company}</div>
+          </div>
+        </div>
+        
+        <blockquote className="text-gray-700 italic leading-relaxed mb-4">
+          "{quote}"
+        </blockquote>
+        
+        <div className="flex justify-end">
+          <img src={logo} alt={company} className="h-6 w-auto opacity-60" />
+        </div>
       </CardContent>
     </Card>
   );

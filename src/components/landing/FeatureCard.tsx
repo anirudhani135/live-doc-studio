@@ -12,22 +12,32 @@ interface FeatureCardProps {
 export function FeatureCard({ icon: Icon, title, description, image }: FeatureCardProps) {
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.04, boxShadow: "0 8px 32px rgba(30,64,175,0.04)" }}
-      transition={{ type: "spring", stiffness: 220, damping: 19 }}
-      className="w-full"
+      whileHover={{ y: -8 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="group"
     >
-      <Card className="bg-[#ffffff]/80 border border-[#f1f5f9] shadow hover:shadow-md transition rounded-2xl flex flex-col h-full">
-        <CardHeader>
-          <div className="flex flex-col items-center gap-2">
-            <div className="bg-[#e0e7ff] rounded-full p-3 mb-2 shadow-sm">
-              <Icon className="w-6 h-6 text-[#1e40af]" />
-            </div>
-            {image && (
-              <img src={image} alt={title} className="h-24 w-full object-cover rounded-lg mb-1 shadow" />
-            )}
-            <CardTitle className="text-lg font-bold text-center">{title}</CardTitle>
-            <CardDescription className="text-base text-[#475569] text-center">{description}</CardDescription>
+      <Card className="h-full bg-white border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 rounded-xl overflow-hidden">
+        <CardHeader className="p-6">
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg w-fit group-hover:bg-blue-100 transition-colors">
+            <Icon className="w-6 h-6 text-blue-600" />
           </div>
+          
+          {image && (
+            <div className="mb-4 -mx-6 -mt-2">
+              <img 
+                src={image} 
+                alt={title} 
+                className="w-full h-32 object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
+              />
+            </div>
+          )}
+          
+          <CardTitle className="text-lg font-semibold text-gray-900 mb-2">
+            {title}
+          </CardTitle>
+          <CardDescription className="text-gray-600 leading-relaxed">
+            {description}
+          </CardDescription>
         </CardHeader>
       </Card>
     </motion.div>
