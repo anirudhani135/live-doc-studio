@@ -40,13 +40,6 @@ const buttonVariants = cva(
   }
 );
 
-// Narrow the prop types for asChild Slot case to React.ButtonHTMLAttributes
-type AsChildButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-    children: React.ReactNode;
-  };
-
 export interface EnhancedButtonProps
   extends Omit<HTMLMotionProps<"button">, "size">,
     VariantProps<typeof buttonVariants> {
@@ -54,95 +47,8 @@ export interface EnhancedButtonProps
   children: React.ReactNode;
 }
 
-/**
- * Only passes safe button props (removing Framer Motion props)
- * to the Slot for asChild scenario. This avoids TS errors and runtime issues.
- */
-function filterButtonDOMProps(
-  props: EnhancedButtonProps
-): AsChildButtonProps {
-  // Pick only the props from EnhancedButtonProps that are part of standard button HTML attributes
-  const {
-    type,
-    disabled,
-    tabIndex,
-    id,
-    name,
-    value,
-    autoFocus,
-    form,
-    formAction,
-    formEncType,
-    formMethod,
-    formNoValidate,
-    formTarget,
-    onClick,
-    onDoubleClick,
-    onMouseDown,
-    onMouseUp,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
-    onBlur,
-    onKeyDown,
-    onKeyUp,
-    onContextMenu,
-    onPointerDown,
-    onPointerUp,
-    onPointerEnter,
-    onPointerLeave,
-    style,
-    className,
-    children,
-    variant,
-    size,
-    effect,
-    asChild,
-    ...rest
-  } = props;
-  // Only pass known "button" props and shadcn variant/size/effect
-  return {
-    type,
-    disabled,
-    tabIndex,
-    id,
-    name,
-    value,
-    autoFocus,
-    form,
-    formAction,
-    formEncType,
-    formMethod,
-    formNoValidate,
-    formTarget,
-    onClick,
-    onDoubleClick,
-    onMouseDown,
-    onMouseUp,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
-    onBlur,
-    onKeyDown,
-    onKeyUp,
-    onContextMenu,
-    onPointerDown,
-    onPointerUp,
-    onPointerEnter,
-    onPointerLeave,
-    style,
-    className,
-    children,
-    variant,
-    size,
-    effect,
-    asChild,
-    // Don't spread ...rest (so no animation props like whileHover etc)
-  };
-}
-
 const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
-  ({ className, variant, size, effect, asChild = false, children, ...props }, ref) => {
+  ({ className, variant, size, effect, asChild = false, children, style, ...props }, ref) => {
     const buttonMotionProps = {
       whileHover: { scale: 1.02 },
       whileTap: { scale: 0.98 },
@@ -150,21 +56,11 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
     };
 
     if (asChild) {
-      // Pass only safe button props and not the Framer Motion props
-      const slotProps = filterButtonDOMProps({
-        className,
-        variant,
-        size,
-        effect,
-        asChild,
-        children,
-        ...props,
-      });
       return (
         <Slot
           className={cn(buttonVariants({ variant, size, effect, className }))}
           ref={ref}
-          {...slotProps}
+          style={style as React.CSSProperties}
         >
           {children}
         </Slot>
@@ -175,6 +71,7 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
       <motion.button
         className={cn(buttonVariants({ variant, size, effect, className }))}
         ref={ref}
+        style={style as React.CSSProperties}
         {...buttonMotionProps}
         {...props}
       >

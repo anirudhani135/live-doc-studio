@@ -26,7 +26,7 @@ import {
   LayoutTemplate,
   Sun,
   LogOut,
-  Code2,
+  FileText,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -34,21 +34,21 @@ import { Button } from "@/components/ui/button";
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "New Project", url: "/projects", icon: PlusCircle },
-  { title: "Saved Projects", url: "/projects", icon: Folder },
-  { title: "Support", url: "/support", icon: LifeBuoy },
+  { title: "Documents", url: "/documents", icon: Folder },
+  { title: "Team", url: "/team", icon: LifeBuoy },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
-const toolItems = [
-  { title: "Repo to Docs", url: "/repo-to-docs", icon: FileCode, new: true },
-  { title: "LLM Compare", url: "/llm-compare", icon: BarChart2, new: true },
-  { title: "Debug Agent", url: "/debug-agent", icon: Bug, new: true, active: true },
+const aiToolItems = [
+  { title: "AI Generator", url: "/ai-generator", icon: FileCode, new: true },
+  { title: "Code Sync", url: "/code-sync", icon: BarChart2, new: true },
+  { title: "Smart Review", url: "/smart-review", icon: Bug, new: true, active: true },
 ];
 
 const resourceItems = [
-  { title: "Starter Kits", url: "/starter-kits", icon: Box },
-  { title: "CodeGuide Pass", url: "/codeguide-pass", icon: Ticket },
   { title: "Templates", url: "/templates", icon: LayoutTemplate },
+  { title: "Integrations", url: "/integrations", icon: Box },
+  { title: "Help & Support", url: "/support", icon: Ticket },
 ];
 
 const NewBadge = () => (
@@ -63,9 +63,9 @@ export function AppSidebar() {
       <SidebarHeader className="p-4 border-b">
           <div className="flex items-center gap-3">
               <div className="bg-blue-600 text-white p-2 rounded-lg">
-                  <Code2 size={20} />
+                  <FileText size={20} />
               </div>
-              <h1 className="text-xl font-bold text-slate-800">CodeGuide</h1>
+              <h1 className="text-xl font-bold text-slate-800">Livedoc</h1>
           </div>
       </SidebarHeader>
       <SidebarContent className="p-2">
@@ -91,10 +91,10 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 mt-4">CODEGUIDE TOOLS</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 mt-4">AI TOOLS</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {toolItems.map((item) => (
+              {aiToolItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
@@ -143,7 +143,7 @@ export function AppSidebar() {
               <span>Light</span>
           </Button>
           <div className="px-2 py-1">
-              <p className="text-sm font-semibold text-slate-800">Godfather Member</p>
+              <p className="text-sm font-semibold text-slate-800">Pro Member</p>
               <div className="w-full bg-slate-200 rounded-full h-1 mt-1.5">
                   <div className="bg-blue-600 h-1 rounded-full" style={{ width: '75%' }}></div>
               </div>
