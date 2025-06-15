@@ -29,7 +29,7 @@ html, body, #root, #app, main, div {
   }
 
   :root {
-    /* Light Theme - All neutral colors, NO YELLOW */
+    /* Enhanced Light Theme - Professional color palette */
     --background: 255 255 255;
     --foreground: 15 23 42;
 
@@ -39,44 +39,75 @@ html, body, #root, #app, main, div {
     --popover: 255 255 255;
     --popover-foreground: 15 23 42;
 
+    /* Enhanced Primary - Modern blue with better contrast */
     --primary: 59 130 246;
     --primary-foreground: 255 255 255;
+    --primary-hover: 37 99 235;
+    --primary-light: 219 234 254;
 
-    --secondary: 241 245 249;
-    --secondary-foreground: 51 65 85;
+    /* Refined Secondary colors */
+    --secondary: 248 250 252;
+    --secondary-foreground: 30 41 59;
+    --secondary-hover: 241 245 249;
 
+    /* Enhanced Muted colors for better hierarchy */
     --muted: 248 250 252;
-    --muted-foreground: 100 116 139;
+    --muted-foreground: 71 85 105;
 
+    /* Improved Accent colors */
     --accent: 241 245 249;
     --accent-foreground: 15 23 42;
+    --accent-hover: 226 232 240;
 
-    --destructive: 239 68 68;
+    /* Status colors with better accessibility */
+    --destructive: 220 38 38;
     --destructive-foreground: 255 255 255;
+    --destructive-light: 254 226 226;
 
+    --success: 22 163 74;
+    --success-foreground: 255 255 255;
+    --success-light: 220 252 231;
+
+    --warning: 217 119 6;
+    --warning-foreground: 255 255 255;
+    --warning-light: 254 243 199;
+
+    --info: 59 130 246;
+    --info-foreground: 255 255 255;
+    --info-light: 219 234 254;
+
+    /* Enhanced Border and Input colors */
     --border: 226 232 240;
+    --border-light: 241 245 249;
     --input: 226 232 240;
     --ring: 59 130 246;
 
-    --radius: 0.75rem;
+    /* Typography colors for better hierarchy */
+    --text-primary: 15 23 42;
+    --text-secondary: 30 41 59;
+    --text-muted: 71 85 105;
+    --text-subtle: 100 116 139;
 
-    --success: 34 197 94;
-    --warning: 148 163 184;
-    --info: 59 130 246;
+    /* Surface colors for depth */
     --surface-elevated: 255 255 255;
-    --surface-sunken: 241 245 249;
+    --surface-sunken: 248 250 252;
+    --surface-hover: 241 245 249;
 
+    /* Enhanced Sidebar colors */
     --sidebar-background: 255 255 255;
-    --sidebar-foreground: 51 65 85;
+    --sidebar-foreground: 30 41 59;
     --sidebar-primary: 59 130 246;
     --sidebar-primary-foreground: 255 255 255;
     --sidebar-accent: 248 250 252;
     --sidebar-accent-foreground: 15 23 42;
     --sidebar-border: 226 232 240;
     --sidebar-ring: 59 130 246;
+
+    --radius: 0.75rem;
   }
 
   .dark {
+    /* Enhanced Dark Theme */
     --background: 2 6 23;
     --foreground: 248 250 252;
 
@@ -86,39 +117,60 @@ html, body, #root, #app, main, div {
     --popover: 15 23 42;
     --popover-foreground: 248 250 252;
 
-    --primary: 59 130 246;
+    --primary: 99 102 241;
     --primary-foreground: 255 255 255;
+    --primary-hover: 79 70 229;
+    --primary-light: 30 41 59;
 
     --secondary: 30 41 59;
     --secondary-foreground: 203 213 225;
+    --secondary-hover: 51 65 85;
 
     --muted: 15 23 42;
     --muted-foreground: 148 163 184;
 
     --accent: 30 41 59;
     --accent-foreground: 248 250 252;
+    --accent-hover: 51 65 85;
 
     --destructive: 239 68 68;
     --destructive-foreground: 248 250 252;
-
-    --border: 51 65 85;
-    --input: 51 65 85;
-    --ring: 59 130 246;
+    --destructive-light: 30 41 59;
 
     --success: 34 197 94;
-    --warning: 100 116 139;
-    --info: 59 130 246;
+    --success-foreground: 248 250 252;
+    --success-light: 30 41 59;
+
+    --warning: 251 191 36;
+    --warning-foreground: 15 23 42;
+    --warning-light: 30 41 59;
+
+    --info: 99 102 241;
+    --info-foreground: 255 255 255;
+    --info-light: 30 41 59;
+
+    --border: 51 65 85;
+    --border-light: 30 41 59;
+    --input: 51 65 85;
+    --ring: 99 102 241;
+
+    --text-primary: 248 250 252;
+    --text-secondary: 203 213 225;
+    --text-muted: 148 163 184;
+    --text-subtle: 100 116 139;
+
     --surface-elevated: 30 41 59;
     --surface-sunken: 15 23 42;
+    --surface-hover: 51 65 85;
 
     --sidebar-background: 15 23 42;
     --sidebar-foreground: 203 213 225;
-    --sidebar-primary: 59 130 246;
+    --sidebar-primary: 99 102 241;
     --sidebar-primary-foreground: 255 255 255;
     --sidebar-accent: 30 41 59;
     --sidebar-accent-foreground: 248 250 252;
     --sidebar-border: 51 65 85;
-    --sidebar-ring: 59 130 246;
+    --sidebar-ring: 99 102 241;
   }
 }
 
@@ -133,6 +185,7 @@ html, body, #root, #app, main, div {
     font-feature-settings: "rlig" 1, "calt" 1;
     background-color: white !important;
     background: white !important;
+    color: hsl(var(--text-primary));
   }
 
   html {
@@ -141,6 +194,57 @@ html, body, #root, #app, main, div {
     background: white !important;
   }
 
+  /* Enhanced Typography Hierarchy */
+  h1 {
+    @apply text-4xl font-bold tracking-tight;
+    color: hsl(var(--text-primary));
+    line-height: 1.1;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold tracking-tight;
+    color: hsl(var(--text-primary));
+    line-height: 1.2;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold tracking-tight;
+    color: hsl(var(--text-primary));
+    line-height: 1.25;
+  }
+
+  h4 {
+    @apply text-xl font-semibold;
+    color: hsl(var(--text-secondary));
+    line-height: 1.3;
+  }
+
+  h5 {
+    @apply text-lg font-medium;
+    color: hsl(var(--text-secondary));
+    line-height: 1.4;
+  }
+
+  h6 {
+    @apply text-base font-medium;
+    color: hsl(var(--text-secondary));
+    line-height: 1.5;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+    color: hsl(var(--text-secondary));
+  }
+
+  .text-muted {
+    color: hsl(var(--text-muted)) !important;
+  }
+
+  .text-subtle {
+    color: hsl(var(--text-subtle)) !important;
+  }
+
+  /* Enhanced Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -151,12 +255,12 @@ html, body, #root, #app, main, div {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.3);
+    background: hsl(var(--text-muted) / 0.3);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.5);
+    background: hsl(var(--text-muted) / 0.5);
   }
 }
 
@@ -165,44 +269,50 @@ html, body, #root, #app, main, div {
     animation: pageEnter 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
+  /* Enhanced Card Components */
   .card-hover {
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 1px solid hsl(var(--border));
   }
 
   .card-hover:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(59, 130, 246, 0.05);
+    box-shadow: 0 12px 24px -6px hsl(var(--text-muted) / 0.1), 0 0 0 1px hsl(var(--primary) / 0.05);
+    border-color: hsl(var(--border-light));
   }
 
   .glass-effect {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid hsl(var(--border-light));
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)) 50%, hsl(var(--info)));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--info)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
+  /* Enhanced Metric Card */
   .metric-card {
-    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--surface-elevated)));
+    background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .metric-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 40px -12px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 20px 40px -12px hsl(var(--primary) / 0.15);
     border-color: hsl(var(--primary) / 0.2);
   }
 
+  /* Enhanced Interactive Elements */
   .interactive-button {
     position: relative;
     overflow: hidden;
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    color: hsl(var(--text-primary));
   }
 
   .interactive-button::before {
@@ -212,15 +322,60 @@ html, body, #root, #app, main, div {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent);
     transition: left 0.5s;
   }
 
   .interactive-button:hover::before {
     left: 100%;
   }
+
+  .interactive-button:hover {
+    color: hsl(var(--primary));
+  }
+
+  /* Enhanced Status Colors */
+  .status-success {
+    background-color: hsl(var(--success-light));
+    color: hsl(var(--success));
+    border: 1px solid hsl(var(--success) / 0.2);
+  }
+
+  .status-warning {
+    background-color: hsl(var(--warning-light));
+    color: hsl(var(--warning));
+    border: 1px solid hsl(var(--warning) / 0.2);
+  }
+
+  .status-error {
+    background-color: hsl(var(--destructive-light));
+    color: hsl(var(--destructive));
+    border: 1px solid hsl(var(--destructive) / 0.2);
+  }
+
+  .status-info {
+    background-color: hsl(var(--info-light));
+    color: hsl(var(--info));
+    border: 1px solid hsl(var(--info) / 0.2);
+  }
+
+  /* Enhanced Surface Elements */
+  .surface-elevated {
+    background-color: hsl(var(--surface-elevated));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .surface-sunken {
+    background-color: hsl(var(--surface-sunken));
+    border: 1px solid hsl(var(--border-light));
+  }
+
+  .surface-hover:hover {
+    background-color: hsl(var(--surface-hover));
+  }
 }
 
+/* Enhanced Animations */
 @keyframes pageEnter {
   from {
     opacity: 0;

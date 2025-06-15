@@ -5,48 +5,48 @@ import { Book } from "lucide-react";
 const helpItems = [
     {
         title: "Project Architecture",
-        bgColor: "bg-red-50 border-red-100",
+        bgColor: "bg-destructive-light border-destructive/20",
         content: "Use microservices for scalability. Monolithic for smaller applications. Consider serverless for cost optimization."
     },
     {
         title: "Code Standards",
-        bgColor: "bg-violet-50 border-violet-100",
+        bgColor: "bg-info-light border-info/20",
         content: "Follow language-specific conventions. Implement ESLint and Prettier. Use TypeScript for type safety."
     },
     {
         title: "Testing Strategy",
-        bgColor: "bg-green-50 border-green-100",
+        bgColor: "bg-success-light border-success/20",
         content: "Unit tests for core functions. Integration tests for APIs. E2E tests for critical user flows. Aim for 80% coverage."
     },
     {
         title: "Documentation",
-        bgColor: "bg-slate-50 border-slate-100",
+        bgColor: "bg-surface-sunken border border-light",
         content: "Maintain clear README files. API documentation with Swagger/OpenAPI. Keep inline comments meaningful and updated."
     }
 ];
 
 export function HelpGuide() {
     return (
-        <aside className="hidden lg:block w-[380px] bg-white border-l p-6 shrink-0">
+        <aside className="hidden lg:block w-[380px] bg-white border-l border-border p-6 shrink-0">
             <div className="flex items-center gap-3 mb-6">
-                <div className="bg-blue-100 p-2 rounded-lg border border-blue-200">
-                    <Book className="h-5 w-5 text-blue-600" />
+                <div className="bg-primary-light p-2 rounded-lg border border-primary/20">
+                    <Book className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                    <h2 className="text-base font-semibold text-slate-800">Help Guide</h2>
-                    <p className="text-sm text-slate-500">Best practices for software projects</p>
+                    <h2 className="text-base font-semibold text-primary">Help Guide</h2>
+                    <p className="text-sm text-muted">Best practices for software projects</p>
                 </div>
             </div>
             <div className="space-y-3">
                 {helpItems.map((item) => (
-                    <Card key={item.title} className={`${item.bgColor} shadow-none border rounded-lg`}>
+                    <Card key={item.title} className={`${item.bgColor} shadow-none rounded-lg surface-hover`}>
                         <CardHeader className="p-4 pb-2">
-                            <CardTitle className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                            <CardTitle className="text-sm font-semibold text-primary flex items-center gap-2">
                                 {item.title}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-4 pt-0">
-                            <p className="text-xs text-slate-600 leading-relaxed">{item.content}</p>
+                            <p className="text-xs text-muted leading-relaxed">{item.content}</p>
                         </CardContent>
                     </Card>
                 ))}

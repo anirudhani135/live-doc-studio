@@ -21,21 +21,26 @@ export default {
 		extend: {
 			colors: {
 				border: 'hsl(var(--border))',
+				'border-light': 'hsl(var(--border-light))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					hover: 'hsl(var(--primary-hover))',
+					light: 'hsl(var(--primary-light))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+					foreground: 'hsl(var(--secondary-foreground))',
+					hover: 'hsl(var(--secondary-hover))'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
+					foreground: 'hsl(var(--destructive-foreground))',
+					light: 'hsl(var(--destructive-light))'
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
@@ -43,7 +48,8 @@ export default {
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					foreground: 'hsl(var(--accent-foreground))',
+					hover: 'hsl(var(--accent-hover))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -63,12 +69,35 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Semantic colors
-				success: 'hsl(var(--success))',
-				warning: 'hsl(var(--warning))',
-				info: 'hsl(var(--info))',
-				'surface-elevated': 'hsl(var(--surface-elevated))',
-				'surface-sunken': 'hsl(var(--surface-sunken))'
+				// Enhanced semantic colors
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))',
+					light: 'hsl(var(--success-light))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))',
+					light: 'hsl(var(--warning-light))'
+				},
+				info: {
+					DEFAULT: 'hsl(var(--info))',
+					foreground: 'hsl(var(--info-foreground))',
+					light: 'hsl(var(--info-light))'
+				},
+				// Enhanced text colors
+				text: {
+					primary: 'hsl(var(--text-primary))',
+					secondary: 'hsl(var(--text-secondary))',
+					muted: 'hsl(var(--text-muted))',
+					subtle: 'hsl(var(--text-subtle))'
+				},
+				// Enhanced surface colors
+				surface: {
+					elevated: 'hsl(var(--surface-elevated))',
+					sunken: 'hsl(var(--surface-sunken))',
+					hover: 'hsl(var(--surface-hover))'
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
