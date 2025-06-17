@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,6 +23,7 @@ const queryClient = new QueryClient();
 function AppContent() {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
+  const isAuthPage = location.pathname === "/auth";
 
   if (isLandingPage) {
     return (
@@ -74,6 +74,15 @@ function AppContent() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
+    );
+  }
+
+  if (isAuthPage) {
+    // Render AuthPage without sidebar or main layout
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <AuthPage />
+      </div>
     );
   }
 

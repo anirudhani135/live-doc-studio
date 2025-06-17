@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -7,6 +6,7 @@ import { motion } from "framer-motion";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { TestimonialCard } from "@/components/landing/TestimonialCard";
 import { BarChart3, Code2, Bot, ShieldCheck, Users, Zap, BookOpen, CheckCircle, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Clean, professional images
 const heroImage = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80";
@@ -72,6 +72,7 @@ const faqs = [
 ];
 
 export default function Landing() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Modern Navbar */}
@@ -94,11 +95,20 @@ export default function Landing() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+              <Button
+                variant="ghost"
+                className="text-gray-600 hover:text-gray-900"
+                onClick={() => navigate('/auth?mode=signin')}
+                aria-label="Sign In"
+              >
                 Sign In
               </Button>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6">
-                Start Free Trial
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+                onClick={() => navigate('/auth?mode=signup')}
+                aria-label="Sign Up"
+              >
+                Sign Up
               </Button>
             </div>
           </div>
@@ -135,11 +145,22 @@ export default function Landing() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold">
-                Start Free Trial <ArrowRight className="ml-2 w-5 h-5" />
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold"
+                onClick={() => navigate('/auth?mode=signup')}
+                aria-label="Sign Up"
+              >
+                Sign Up <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              <Button size="lg" variant="outline" className="px-8 py-4 text-lg font-semibold border-gray-300">
-                Watch Demo
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8 py-4 text-lg font-semibold border-gray-300"
+                onClick={() => navigate('/auth?mode=signin')}
+                aria-label="Sign In"
+              >
+                Sign In
               </Button>
             </motion.div>
           </div>
