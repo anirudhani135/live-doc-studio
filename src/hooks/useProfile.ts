@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { logSecurityEvent } from "@/lib/securityLogger";
+import type { Json } from "@/integrations/supabase/types";
 
 export type UserProfile = {
   id: string;
@@ -29,6 +30,15 @@ export type UserProfile = {
   updated_at: string;
 };
 
+// Helper function to safely parse JSON preferences
+const parsePreferences = <T>(preferences: Json | null, defaultValue: T): T => {
+  if (!preferences) return defaultValue;
+  if (typeof preferences === 'object' && preferences !== null) {
+    return preferences as T;
+  }
+  return defaultValue;
+};
+
 export const useProfile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +57,23 @@ export const useProfile = () => {
         .single();
 
       if (error) throw error;
-      setProfile(data);
+      
+      // Transform the data to match our UserProfile type
+      const transformedProfile: UserProfile = {
+        ...data,
+        notification_preferences: parsePreferences(data.notification_preferences, {
+          email: true,
+          push: true,
+          security_alerts: true
+        }),
+        security_preferences: parsePreferences(data.security_preferences, {
+          two_factor_enabled: false,
+          login_notifications: true,
+          session_timeout: 30
+        })
+      };
+      
+      setProfile(transformedProfile);
     } catch (error) {
       console.error("Error fetching profile:", error);
       toast({
@@ -73,7 +99,22 @@ export const useProfile = () => {
 
       if (error) throw error;
       
-      setProfile(data);
+      // Transform the updated data to match our UserProfile type
+      const transformedProfile: UserProfile = {
+        ...data,
+        notification_preferences: parsePreferences(data.notification_preferences, {
+          email: true,
+          push: true,
+          security_alerts: true
+        }),
+        security_preferences: parsePreferences(data.security_preferences, {
+          two_factor_enabled: false,
+          login_notifications: true,
+          session_timeout: 30
+        })
+      };
+      
+      setProfile(transformedProfile);
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
@@ -85,7 +126,7 @@ export const useProfile = () => {
         detail: { updated_fields: Object.keys(updates) },
       });
 
-      return data;
+      return transformedProfile;
     } catch (error) {
       console.error("Error updating profile:", error);
       toast({

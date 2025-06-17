@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useProfile } from '@/hooks/useProfile';
 import { useSecurity } from '@/hooks/useSecurity';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';

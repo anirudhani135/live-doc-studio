@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { Json } from "@/integrations/supabase/types";
 
 export type SecurityAuditLog = {
   id: string;
@@ -46,7 +47,15 @@ export const useSecurity = () => {
         .limit(50);
 
       if (error) throw error;
-      setAuditLogs(data || []);
+      
+      // Transform the data to match our SecurityAuditLog type
+      const transformedLogs: SecurityAuditLog[] = (data || []).map(log => ({
+        ...log,
+        ip_address: log.ip_address ? String(log.ip_address) : null,
+        user_id: log.user_id || user.id
+      }));
+      
+      setAuditLogs(transformedLogs);
     } catch (error) {
       console.error("Error fetching audit logs:", error);
     }
@@ -64,7 +73,16 @@ export const useSecurity = () => {
         .order("last_activity", { ascending: false });
 
       if (error) throw error;
-      setActiveSessions(data || []);
+      
+      // Transform the data to match our UserSession type
+      const transformedSessions: UserSession[] = (data || []).map(session => ({
+        ...session,
+        ip_address: session.ip_address ? String(session.ip_address) : null,
+        last_activity: session.last_activity || new Date().toISOString(),
+        created_at: session.created_at || new Date().toISOString()
+      }));
+      
+      setActiveSessions(transformedSessions);
     } catch (error) {
       console.error("Error fetching active sessions:", error);
     }
