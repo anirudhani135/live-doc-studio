@@ -86,6 +86,81 @@ export type Database = {
         }
         Relationships: []
       }
+      password_change_requests: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          id: string
+          request_token: string
+          used: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          request_token: string
+          used?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          request_token?: string
+          used?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          email_verified: boolean | null
+          first_name: string | null
+          id: string
+          language: string | null
+          last_name: string | null
+          notification_preferences: Json | null
+          phone: string | null
+          security_preferences: Json | null
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          email_verified?: boolean | null
+          first_name?: string | null
+          id: string
+          language?: string | null
+          last_name?: string | null
+          notification_preferences?: Json | null
+          phone?: string | null
+          security_preferences?: Json | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          email_verified?: boolean | null
+          first_name?: string | null
+          id?: string
+          language?: string | null
+          last_name?: string | null
+          notification_preferences?: Json | null
+          phone?: string | null
+          security_preferences?: Json | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           ai_model: string
@@ -124,6 +199,75 @@ export type Database = {
           tech_stack?: string[] | null
           type?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      security_audit_logs: {
+        Row: {
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          success: boolean | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_sessions: {
+        Row: {
+          created_at: string | null
+          device_info: Json | null
+          expires_at: string
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          last_activity: string | null
+          session_token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          device_info?: Json | null
+          expires_at: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          session_token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          device_info?: Json | null
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          session_token?: string
           user_id?: string
         }
         Relationships: []

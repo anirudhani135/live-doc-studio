@@ -1,4 +1,3 @@
-
 import {
   Sidebar,
   SidebarContent,
@@ -27,10 +26,13 @@ import {
   Sun,
   LogOut,
   FileText,
+  User,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 import { useToast } from "@/hooks/use-toast";
 
 const mainItems = [
@@ -61,6 +63,7 @@ export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { profile } = useProfile();
   const { toast } = useToast();
 
   const handleSignOut = async () => {
@@ -80,6 +83,14 @@ export function AppSidebar() {
       });
     }
   };
+
+  const displayName = profile?.first_name 
+    ? `${profile.first_name} ${profile.last_name || ''}`.trim()
+    : user?.email?.split('@')[0] || 'User';
+
+  const initials = profile?.first_name 
+    ? `${profile.first_name[0]}${profile.last_name?.[0] || ''}`
+    : user?.email?.[0]?.toUpperCase() || 'U';
 
   return (
     <Sidebar>
@@ -165,14 +176,34 @@ export function AppSidebar() {
               <Sun size={20} />
               <span>Light</span>
           </Button>
-          <div className="px-2 py-1">
-              <p className="text-sm font-semibold text-slate-800">
-                {user?.email?.split('@')[0] || 'User'}
-              </p>
-              <div className="w-full bg-slate-200 rounded-full h-1 mt-1.5">
-                  <div className="bg-blue-600 h-1 rounded-full" style={{ width: '75%' }}></div>
+          
+          <div className="flex items-center gap-3 px-2 py-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="text-sm bg-blue-100 text-blue-800">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 truncate">
+                    {displayName}
+                  </p>
+                  <div className="w-full bg-slate-200 rounded-full h-1 mt-1">
+                      <div className="bg-blue-600 h-1 rounded-full" style={{ width: '75%' }}></div>
+                  </div>
               </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="p-1 h-8 w-8"
+                asChild
+              >
+                <Link to="/settings">
+                  <User size={16} />
+                </Link>
+              </Button>
           </div>
+          
           <Separator className="my-1" />
           <Button 
             variant="ghost" 
