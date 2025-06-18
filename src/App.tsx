@@ -17,132 +17,70 @@ import { PageTransition } from "./components/ui/page-transition";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthPage from "./components/auth/AuthPage";
-
 const queryClient = new QueryClient();
-
 function AppContent() {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
   const isAuthPage = location.pathname === "/auth";
-
   if (isLandingPage) {
-    return (
-      <PageTransition>
+    return <PageTransition>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
+          <Route path="/dashboard" element={<ProtectedRoute>
                 <Dashboard />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/projects" 
-            element={
-              <ProtectedRoute>
+              </ProtectedRoute>} />
+          <Route path="/projects" element={<ProtectedRoute>
                 <Projects />
-              </ProtectedRoute>
-            }
-          />
-          <Route 
-            path="/documents" 
-            element={
-              <ProtectedRoute>
+              </ProtectedRoute>} />
+          <Route path="/documents" element={<ProtectedRoute>
                 <Documents />
-              </ProtectedRoute>
-            }
-          />
-          <Route 
-            path="/team" 
-            element={
-              <ProtectedRoute>
+              </ProtectedRoute>} />
+          <Route path="/team" element={<ProtectedRoute>
                 <Team />
-              </ProtectedRoute>
-            }
-          />
-          <Route 
-            path="/settings" 
-            element={
-              <ProtectedRoute>
+              </ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute>
                 <Settings />
-              </ProtectedRoute>
-            }
-          />
+              </ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </PageTransition>
-    );
+      </PageTransition>;
   }
-
   if (isAuthPage) {
     // Render AuthPage without sidebar or main layout
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+    return <div className="min-h-screen flex items-center justify-center bg-background">
         <AuthPage />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <SidebarProvider>
+  return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <SidebarInset>
           <div className="flex flex-col min-h-screen">
             <header className="w-full flex items-center p-2 border-b">
-              <SidebarTrigger />
-              <span className="text-xl font-bold ml-2 tracking-tight text-primary">
-                Livedoc
-              </span>
+              
+              
             </header>
             <main className="flex-1">
               <PageTransition>
                 <Routes>
                   <Route path="/" element={<Landing />} />
                   <Route path="/auth" element={<AuthPage />} />
-                  <Route 
-                    path="/dashboard" 
-                    element={
-                      <ProtectedRoute>
+                  <Route path="/dashboard" element={<ProtectedRoute>
                         <Dashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/projects" 
-                    element={
-                      <ProtectedRoute>
+                      </ProtectedRoute>} />
+                  <Route path="/projects" element={<ProtectedRoute>
                         <Projects />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route 
-                    path="/documents" 
-                    element={
-                      <ProtectedRoute>
+                      </ProtectedRoute>} />
+                  <Route path="/documents" element={<ProtectedRoute>
                         <Documents />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route 
-                    path="/team" 
-                    element={
-                      <ProtectedRoute>
+                      </ProtectedRoute>} />
+                  <Route path="/team" element={<ProtectedRoute>
                         <Team />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route 
-                    path="/settings" 
-                    element={
-                      <ProtectedRoute>
+                      </ProtectedRoute>} />
+                  <Route path="/settings" element={<ProtectedRoute>
                         <Settings />
-                      </ProtectedRoute>
-                    }
-                  />
+                      </ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </PageTransition>
@@ -150,12 +88,9 @@ function AppContent() {
           </div>
         </SidebarInset>
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 }
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+const App = () => <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -165,7 +100,5 @@ const App = () => (
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
-);
-
+  </QueryClientProvider>;
 export default App;

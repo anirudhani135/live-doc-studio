@@ -2,39 +2,29 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  TrendingUp, 
-  Clock, 
-  FileText, 
-  Users, 
-  Sparkles,
-  Plus,
-  ArrowRight,
-  Zap,
-  CheckCircle
-} from 'lucide-react';
+import { TrendingUp, Clock, FileText, Users, Sparkles, Plus, ArrowRight, Zap, CheckCircle } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
 import { useDocuments } from '@/hooks/useDocuments';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
-
 const Dashboard = () => {
-  const { projects } = useProjects();
-  const { documents } = useDocuments();
-
+  const {
+    projects
+  } = useProjects();
+  const {
+    documents
+  } = useDocuments();
   const stats = {
     totalProjects: projects.length,
     completedProjects: projects.filter(p => p.status === 'completed').length,
     totalDocuments: documents.length,
-    timeSaved: projects.length * 8.5, // Estimated hours saved
+    timeSaved: projects.length * 8.5,
+    // Estimated hours saved
     aiAccuracy: 98.2,
     teamMembers: 4 // Mock data
   };
-
   const recentProjects = projects.slice(0, 3);
   const recentDocuments = documents.slice(0, 4);
-
-  return (
-    <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-full">
+  return <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-full">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -44,14 +34,8 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <Button variant="outline" className="flex-1 sm:flex-none">
-            <FileText className="h-4 w-4 mr-2" />
-            New Document
-          </Button>
-          <Button className="flex-1 sm:flex-none">
-            <Plus className="h-4 w-4 mr-2" />
-            New Project
-          </Button>
+          
+          
         </div>
       </div>
 
@@ -134,12 +118,7 @@ const Dashboard = () => {
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentProjects.length > 0 ? (
-              recentProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-2"
-                >
+            {recentProjects.length > 0 ? recentProjects.map(project => <div key={project.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-2">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                       <Sparkles className="h-5 w-5 text-blue-600" />
@@ -159,10 +138,7 @@ const Dashboard = () => {
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
+                </div>) : <div className="text-center py-8">
                 <Sparkles className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">No projects yet</h3>
                 <p className="text-gray-600 mb-4">Create your first AI-powered project</p>
@@ -170,8 +146,7 @@ const Dashboard = () => {
                   <Plus className="h-4 w-4 mr-2" />
                   Create Project
                 </Button>
-              </div>
-            )}
+              </div>}
           </CardContent>
         </Card>
 
@@ -205,9 +180,7 @@ const Dashboard = () => {
               <CardTitle>Recent Documents</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {recentDocuments.length > 0 ? (
-                recentDocuments.map((doc) => (
-                  <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg cursor-pointer">
+              {recentDocuments.length > 0 ? recentDocuments.map(doc => <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg cursor-pointer">
                     <FileText className="h-4 w-4 text-muted-foreground" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{doc.title}</p>
@@ -215,11 +188,7 @@ const Dashboard = () => {
                         {new Date(doc.updated_at).toLocaleDateString()}
                       </p>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-muted-foreground">No documents yet</p>
-              )}
+                  </div>) : <p className="text-sm text-muted-foreground">No documents yet</p>}
             </CardContent>
           </Card>
         </div>
@@ -237,8 +206,6 @@ const Dashboard = () => {
           <AnalyticsDashboard />
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
