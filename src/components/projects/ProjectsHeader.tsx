@@ -1,9 +1,9 @@
-// Make header and tab/buttons responsive, stack on mobile
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Grid, Plus, Sparkles } from 'lucide-react';
+import { Plus, Sparkles } from 'lucide-react';
+
 interface ProjectsHeaderProps {
   activeTab: string;
   onTabChange: (value: string) => void;
@@ -11,6 +11,7 @@ interface ProjectsHeaderProps {
   onCreateProject: () => void;
   onStartWizard: () => void;
 }
+
 const ProjectsHeader: React.FC<ProjectsHeaderProps> = ({
   activeTab,
   onTabChange,
@@ -22,15 +23,24 @@ const ProjectsHeader: React.FC<ProjectsHeaderProps> = ({
       <div className="w-full md:w-auto">
         <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
           <TabsList className="w-full md:w-auto">
-            
+            <TabsTrigger value="all">All Projects ({projectCount})</TabsTrigger>
+            <TabsTrigger value="recent">Recent</TabsTrigger>
+            <TabsTrigger value="favorites">Favorites</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
       
       <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-        
-        
+        <Button variant="outline" size="sm" onClick={onStartWizard} className="w-full sm:w-auto">
+          <Sparkles className="w-4 h-4 mr-2" />
+          AI Project Wizard
+        </Button>
+        <Button size="sm" onClick={onCreateProject} className="w-full sm:w-auto">
+          <Plus className="w-4 h-4 mr-2" />
+          New Project
+        </Button>
       </div>
     </div>;
 };
+
 export default ProjectsHeader;

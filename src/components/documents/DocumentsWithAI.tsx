@@ -1,11 +1,13 @@
+
 import React, { useState } from "react";
-import { Plus, Bot, Users } from "lucide-react";
+import { Plus, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDocuments } from "@/hooks/useDocuments";
 import DocumentList from "@/components/documents/DocumentList";
 import DocumentDialog from "@/components/documents/DocumentDialog";
 import RealTimeEditor from "@/components/collaboration/RealTimeEditor";
 import AIAssistant from "@/components/ai/AIAssistant";
+
 const DocumentsWithAI = () => {
   const {
     documents,
@@ -15,19 +17,23 @@ const DocumentsWithAI = () => {
     deleteDocument,
     refetch
   } = useDocuments();
+  
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [editingDoc, setEditingDoc] = useState(null);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [showRealTimeEditor, setShowRealTimeEditor] = useState(false);
+
   const handleNewDoc = () => {
     setSelectedDoc(null);
     setDialogOpen(true);
   };
+
   const handleEdit = doc => {
     setSelectedDoc(doc);
     setDialogOpen(true);
   };
+
   const handleSave = async docData => {
     if (selectedDoc) {
       await updateDocument(selectedDoc.id, docData);
@@ -36,15 +42,18 @@ const DocumentsWithAI = () => {
     }
     setDialogOpen(false);
   };
+
   const handleDelete = async (id: string) => {
     if (window.confirm("Really delete this document?")) {
       await deleteDocument(id);
     }
   };
+
   const handleOpen = doc => {
     setEditingDoc(doc);
     setShowRealTimeEditor(true);
   };
+
   const handleEditorSave = async (content: string, metadata?: any) => {
     if (editingDoc) {
       await updateDocument(editingDoc.id, {
@@ -54,10 +63,12 @@ const DocumentsWithAI = () => {
       });
     }
   };
+
   const handleBackToList = () => {
     setEditingDoc(null);
     setShowRealTimeEditor(false);
   };
+
   if (showRealTimeEditor && editingDoc) {
     return <div className="h-full flex flex-col">
         <div className="p-4 border-b flex items-center justify-between">
@@ -86,18 +97,17 @@ const DocumentsWithAI = () => {
         </div>
       </div>;
   }
+
   return <div className="flex h-full">
       <div className="flex-1 p-8 flex flex-col min-h-[80vh] max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold">Documents</h1>
             <div className="text-muted-foreground">
-              All your specs, guides, and living documentation with real-time collaboration.
+              All your specs, guides, and living documentation with AI assistance.
             </div>
           </div>
           <div className="flex gap-2">
-            
-            
             <Button size="sm" onClick={handleNewDoc}>
               <Plus className="w-4 h-4 mr-2" />
               New Document
@@ -115,4 +125,5 @@ const DocumentsWithAI = () => {
         </div>}
     </div>;
 };
+
 export default DocumentsWithAI;

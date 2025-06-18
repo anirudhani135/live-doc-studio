@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +9,6 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import Documents from "./pages/Documents";
-import Team from "./pages/Team";
 import Settings from "./pages/Settings";
 import { AppSidebar } from "./components/AppSidebar";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
@@ -17,11 +17,14 @@ import { PageTransition } from "./components/ui/page-transition";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthPage from "./components/auth/AuthPage";
+
 const queryClient = new QueryClient();
+
 function AppContent() {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
   const isAuthPage = location.pathname === "/auth";
+
   if (isLandingPage) {
     return <PageTransition>
         <Routes>
@@ -36,9 +39,6 @@ function AppContent() {
           <Route path="/documents" element={<ProtectedRoute>
                 <Documents />
               </ProtectedRoute>} />
-          <Route path="/team" element={<ProtectedRoute>
-                <Team />
-              </ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute>
                 <Settings />
               </ProtectedRoute>} />
@@ -46,12 +46,13 @@ function AppContent() {
         </Routes>
       </PageTransition>;
   }
+
   if (isAuthPage) {
-    // Render AuthPage without sidebar or main layout
     return <div className="min-h-screen flex items-center justify-center bg-background">
         <AuthPage />
       </div>;
   }
+
   return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
@@ -75,9 +76,6 @@ function AppContent() {
                   <Route path="/documents" element={<ProtectedRoute>
                         <Documents />
                       </ProtectedRoute>} />
-                  <Route path="/team" element={<ProtectedRoute>
-                        <Team />
-                      </ProtectedRoute>} />
                   <Route path="/settings" element={<ProtectedRoute>
                         <Settings />
                       </ProtectedRoute>} />
@@ -90,6 +88,7 @@ function AppContent() {
       </div>
     </SidebarProvider>;
 }
+
 const App = () => <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -101,4 +100,5 @@ const App = () => <QueryClientProvider client={queryClient}>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>;
+
 export default App;

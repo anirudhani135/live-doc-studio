@@ -1,3 +1,4 @@
+
 import {
   Sidebar,
   SidebarContent,
@@ -15,7 +16,6 @@ import {
   LayoutDashboard,
   PlusCircle,
   Folder,
-  LifeBuoy,
   Settings,
   FileCode,
   BarChart2,
@@ -39,7 +39,6 @@ const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "New Project", url: "/projects", icon: PlusCircle },
   { title: "Documents", url: "/documents", icon: Folder },
-  { title: "Team", url: "/team", icon: LifeBuoy },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
