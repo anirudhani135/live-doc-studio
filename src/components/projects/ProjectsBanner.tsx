@@ -1,17 +1,15 @@
-
 // Responsive layout for banner, stack description and button on small screens
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, FileText, Grid } from 'lucide-react';
-
 interface ProjectsBannerProps {
   onStartWizard: () => void;
 }
-
-const ProjectsBanner: React.FC<ProjectsBannerProps> = ({ onStartWizard }) => {
-  return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 sm:p-6 rounded-lg">
+const ProjectsBanner: React.FC<ProjectsBannerProps> = ({
+  onStartWizard
+}) => {
+  return <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 sm:p-6 rounded-lg">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg sm:text-xl font-bold mb-2">Create Your Next Project with AI</h2>
@@ -27,21 +25,13 @@ const ProjectsBanner: React.FC<ProjectsBannerProps> = ({ onStartWizard }) => {
               <FileText className="h-4 w-4" />
               Auto Documentation
             </div>
-            <div className="flex items-center gap-1">
-              <Grid className="h-4 w-4" />
-              Project Monitoring
-            </div>
+            
           </div>
         </div>
-        <Button 
-          onClick={onStartWizard}
-          className="bg-white text-blue-600 hover:bg-gray-100 mt-4 md:mt-0 w-full md:w-auto"
-        >
+        <Button onClick={onStartWizard} className="bg-white text-blue-600 hover:bg-gray-100 mt-4 md:mt-0 w-full md:w-auto">
           Start AI Wizard
         </Button>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ProjectsBanner;
