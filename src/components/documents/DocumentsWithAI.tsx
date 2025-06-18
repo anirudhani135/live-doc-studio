@@ -97,10 +97,7 @@ const DocumentsWithAI = () => {
           </div>
           <div className="flex gap-2">
             
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Collaborate
-            </Button>
+            
             <Button size="sm" onClick={handleNewDoc}>
               <Plus className="w-4 h-4 mr-2" />
               New Document
