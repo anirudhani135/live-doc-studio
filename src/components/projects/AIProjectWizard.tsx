@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -120,6 +121,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
         name: projectData.name,
         description: projectData.description,
         type: getProjectType(projectData.projectType),
+        status: 'draft',
         tech_stack: projectData.techStack,
         ai_model: projectData.aiModel,
         metadata: {
