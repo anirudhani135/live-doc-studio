@@ -1,19 +1,19 @@
 
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Sparkles, ArrowRight, ArrowLeft, CheckCircle, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { aiContentService } from '@/lib/ai-content-service';
 import { useToast } from '@/hooks/use-toast';
 import { useProjects } from '@/hooks/useProjects';
 import { Project } from '@/types/project';
+
+// Import wizard step components
+import ProjectDescriptionStep from './wizard/ProjectDescriptionStep';
+import AIModelSelectionStep from './wizard/AIModelSelectionStep';
+import ProjectTypeStep from './wizard/ProjectTypeStep';
+import TechStackStep from './wizard/TechStackStep';
+import WizardProgress from './wizard/WizardProgress';
+import WizardNavigation from './wizard/WizardNavigation';
 
 interface AIProjectWizardProps {
   open: boolean;
@@ -31,10 +31,9 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
     aiModel: 'gpt-4' as AIModel,
     projectType: '',
     techStack: [],
-    features: [],
-    timeline: '',
     generatedSpec: null,
-    architecture: null
+    architecture: null,
+    timeline: ''
   });
 
   const { createProject } = useProjects();
@@ -46,13 +45,9 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
     'Project Type',
     'Technical Requirements',
     'AI Analysis',
-    'Specification Review',
-    'Architecture Design',
-    'Final Review',
-    'Project Creation'
+    'Final Review'
   ];
 
-  // Map project types to valid Project type values
   const getProjectType = (projectType: string): Project['type'] => {
     switch (projectType) {
       case 'web-app':
@@ -72,10 +67,8 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
 
   const handleNextStep = async () => {
     if (currentStep === 5) {
-      // AI Analysis step
       await performAIAnalysis();
-    } else if (currentStep === 9) {
-      // Final step - create project
+    } else if (currentStep === 6) {
       await createProjectWithAI();
     } else {
       setCurrentStep(prev => prev + 1);
@@ -85,7 +78,6 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
   const performAIAnalysis = async () => {
     setIsGenerating(true);
     try {
-      // Generate comprehensive specification
       const specResponse = await aiContentService.generateSpecFromDescription(
         `${projectData.description}\n\nProject Type: ${projectData.projectType}\nTech Stack: ${projectData.techStack.join(', ')}`
       );
@@ -126,7 +118,6 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
         ai_model: projectData.aiModel,
         metadata: {
           ai_model: projectData.aiModel,
-          features: projectData.features,
           generated_spec: projectData.generatedSpec,
           architecture: projectData.architecture,
           timeline_estimate: projectData.timeline,
@@ -141,18 +132,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
       });
 
       onOpenChange(false);
-      setCurrentStep(1);
-      setProjectData({
-        name: '',
-        description: '',
-        aiModel: 'gpt-4' as AIModel,
-        projectType: '',
-        techStack: [],
-        features: [],
-        timeline: '',
-        generatedSpec: null,
-        architecture: null
-      });
+      resetWizard();
     } catch (error) {
       toast({
         title: "Creation Failed",
@@ -164,117 +144,63 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
     }
   };
 
+  const resetWizard = () => {
+    setCurrentStep(1);
+    setProjectData({
+      name: '',
+      description: '',
+      aiModel: 'gpt-4' as AIModel,
+      projectType: '',
+      techStack: [],
+      generatedSpec: null,
+      architecture: null,
+      timeline: ''
+    });
+  };
+
+  const updateProjectData = (updates: any) => {
+    setProjectData(prev => ({ ...prev, ...updates }));
+  };
+
+  const toggleTechStack = (tech: string) => {
+    setProjectData(prev => ({
+      ...prev,
+      techStack: prev.techStack.includes(tech)
+        ? prev.techStack.filter(t => t !== tech)
+        : [...prev.techStack, tech]
+    }));
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="projectName">Project Name</Label>
-              <Input
-                id="projectName"
-                value={projectData.name}
-                onChange={(e) => setProjectData(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="Enter your project name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="projectDescription">Project Description</Label>
-              <Textarea
-                id="projectDescription"
-                value={projectData.description}
-                onChange={(e) => setProjectData(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Describe your project goals, target audience, and key features..."
-                className="min-h-[120px]"
-              />
-            </div>
-          </div>
+          <ProjectDescriptionStep
+            projectData={projectData}
+            onUpdate={updateProjectData}
+          />
         );
-
       case 2:
         return (
-          <div className="space-y-4">
-            <Label>Select AI Model</Label>
-            <div className="grid gap-3">
-              {(['gpt-4', 'claude', 'gemini'] as AIModel[]).map((model) => (
-                <Card
-                  key={model}
-                  className={`cursor-pointer transition-colors ${
-                    projectData.aiModel === model ? 'border-primary bg-primary/5' : ''
-                  }`}
-                  onClick={() => setProjectData(prev => ({ ...prev, aiModel: model }))}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">{model.toUpperCase()}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {model === 'gpt-4' && 'Best for comprehensive analysis and coding'}
-                          {model === 'claude' && 'Excellent for detailed documentation'}
-                          {model === 'gemini' && 'Great for creative and technical solutions'}
-                        </p>
-                      </div>
-                      {projectData.aiModel === model && <CheckCircle className="h-5 w-5 text-primary" />}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
+          <AIModelSelectionStep
+            selectedModel={projectData.aiModel}
+            onSelect={(model) => updateProjectData({ aiModel: model })}
+          />
         );
-
       case 3:
         return (
-          <div className="space-y-4">
-            <Label>Project Type</Label>
-            <Select value={projectData.projectType} onValueChange={(value) => setProjectData(prev => ({ ...prev, projectType: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select project type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="web-app">Web Application</SelectItem>
-                <SelectItem value="mobile-app">Mobile Application</SelectItem>
-                <SelectItem value="api">API/Backend Service</SelectItem>
-                <SelectItem value="saas">SaaS Platform</SelectItem>
-                <SelectItem value="ecommerce">E-commerce</SelectItem>
-                <SelectItem value="cms">Content Management</SelectItem>
-                <SelectItem value="analytics">Analytics Dashboard</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <ProjectTypeStep
+            projectType={projectData.projectType}
+            onSelect={(type) => updateProjectData({ projectType: type })}
+          />
         );
-
       case 4:
         return (
-          <div className="space-y-4">
-            <Label>Technology Stack (Select multiple)</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                'React', 'TypeScript', 'Node.js', 'PostgreSQL', 
-                'Supabase', 'Tailwind CSS', 'Python', 'Docker',
-                'AWS', 'Firebase', 'MongoDB', 'Redis'
-              ].map((tech) => (
-                <Badge
-                  key={tech}
-                  variant={projectData.techStack.includes(tech) ? 'default' : 'outline'}
-                  className="cursor-pointer justify-center p-2"
-                  onClick={() => {
-                    setProjectData(prev => ({
-                      ...prev,
-                      techStack: prev.techStack.includes(tech)
-                        ? prev.techStack.filter(t => t !== tech)
-                        : [...prev.techStack, tech]
-                    }));
-                  }}
-                >
-                  {tech}
-                </Badge>
-              ))}
-            </div>
-          </div>
+          <TechStackStep
+            selectedTech={projectData.techStack}
+            onToggle={toggleTechStack}
+          />
         );
-
       case 5:
         return (
           <div className="space-y-4 text-center">
@@ -293,37 +219,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
             </div>
           </div>
         );
-
       case 6:
-        return (
-          <div className="space-y-4">
-            <h3 className="font-semibold">Generated Specification</h3>
-            <div className="max-h-60 overflow-y-auto p-4 bg-muted rounded-lg">
-              <div className="whitespace-pre-wrap text-sm">
-                {projectData.generatedSpec || 'Specification will appear here...'}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 7:
-        return (
-          <div className="space-y-4">
-            <h3 className="font-semibold">System Architecture</h3>
-            <div className="max-h-60 overflow-y-auto p-4 bg-muted rounded-lg">
-              <div className="whitespace-pre-wrap text-sm">
-                {projectData.architecture || 'Architecture will appear here...'}
-              </div>
-            </div>
-            <div className="pt-4">
-              <p className="text-sm text-muted-foreground">
-                <strong>Timeline Estimate:</strong> {projectData.timeline}
-              </p>
-            </div>
-          </div>
-        );
-
-      case 8:
         return (
           <div className="space-y-4">
             <h3 className="font-semibold">Project Summary</h3>
@@ -336,37 +232,15 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
                 <div className="text-sm font-medium">AI Model</div>
                 <div className="text-sm text-muted-foreground">{projectData.aiModel.toUpperCase()}</div>
               </div>
-              <div className="p-3 bg-muted rounded-lg">
-                <div className="text-sm font-medium">Tech Stack</div>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {projectData.techStack.map(tech => (
-                    <Badge key={tech} variant="secondary" className="text-xs">{tech}</Badge>
-                  ))}
+              {projectData.timeline && (
+                <div className="p-3 bg-muted rounded-lg">
+                  <div className="text-sm font-medium">Timeline Estimate</div>
+                  <div className="text-sm text-muted-foreground">{projectData.timeline}</div>
                 </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 9:
-        return (
-          <div className="space-y-4 text-center">
-            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              {isGenerating ? (
-                <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-              ) : (
-                <CheckCircle className="h-8 w-8 text-green-600" />
               )}
             </div>
-            <div>
-              <h3 className="text-lg font-semibold">Creating Your Project</h3>
-              <p className="text-muted-foreground">
-                Setting up your AI-powered project with all generated documentation...
-              </p>
-            </div>
           </div>
         );
-
       default:
         return null;
     }
@@ -394,46 +268,24 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
         </DialogHeader>
 
         <div className="space-y-6">
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">
-                Step {currentStep} of {steps.length}: {steps[currentStep - 1]}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {Math.round((currentStep / steps.length) * 100)}%
-              </span>
-            </div>
-            <Progress value={(currentStep / steps.length) * 100} />
-          </div>
+          <WizardProgress
+            currentStep={currentStep}
+            totalSteps={steps.length}
+            stepName={steps[currentStep - 1]}
+          />
 
           <div className="min-h-[300px]">
             {renderStepContent()}
           </div>
 
-          <div className="flex justify-between">
-            <Button
-              variant="outline"
-              onClick={() => setCurrentStep(prev => prev - 1)}
-              disabled={currentStep === 1 || isGenerating}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Previous
-            </Button>
-            
-            <Button
-              onClick={handleNextStep}
-              disabled={!canProceed() || isGenerating}
-            >
-              {isGenerating ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : currentStep === steps.length ? (
-                <CheckCircle className="h-4 w-4 mr-2" />
-              ) : (
-                <ArrowRight className="h-4 w-4 mr-2" />
-              )}
-              {currentStep === steps.length ? 'Complete' : 'Next'}
-            </Button>
-          </div>
+          <WizardNavigation
+            currentStep={currentStep}
+            totalSteps={steps.length}
+            canProceed={canProceed()}
+            isProcessing={isGenerating}
+            onPrevious={() => setCurrentStep(prev => prev - 1)}
+            onNext={handleNextStep}
+          />
         </div>
       </DialogContent>
     </Dialog>
