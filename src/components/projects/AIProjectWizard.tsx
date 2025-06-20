@@ -19,13 +19,15 @@ interface AIProjectWizardProps {
   onOpenChange: (open: boolean) => void;
 }
 
+type AIModel = 'gpt-4' | 'claude' | 'gemini';
+
 const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [projectData, setProjectData] = useState({
     name: '',
     description: '',
-    aiModel: 'gpt-4',
+    aiModel: 'gpt-4' as AIModel,
     projectType: '',
     techStack: [],
     features: [],
@@ -99,7 +101,9 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
       await createProject({
         name: projectData.name,
         description: projectData.description,
-        project_type: projectData.projectType,
+        type: projectData.projectType,
+        tech_stack: projectData.techStack,
+        ai_model: projectData.aiModel,
         metadata: {
           ai_model: projectData.aiModel,
           tech_stack: projectData.techStack,
@@ -122,7 +126,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
       setProjectData({
         name: '',
         description: '',
-        aiModel: 'gpt-4',
+        aiModel: 'gpt-4' as AIModel,
         projectType: '',
         techStack: [],
         features: [],
@@ -173,7 +177,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
           <div className="space-y-4">
             <Label>Select AI Model</Label>
             <div className="grid gap-3">
-              {['gpt-4', 'claude', 'gemini'].map((model) => (
+              {(['gpt-4', 'claude', 'gemini'] as AIModel[]).map((model) => (
                 <Card
                   key={model}
                   className={`cursor-pointer transition-colors ${
