@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { Project } from '@/types/project';
 import ProjectsHeader from '@/components/projects/ProjectsHeader';
 import ProjectsBanner from '@/components/projects/ProjectsBanner';
 import ProjectsGrid from '@/components/projects/ProjectsGrid';
@@ -10,7 +11,7 @@ import ProjectDialog from '@/components/projects/ProjectDialog';
 import AIProjectWizard from '@/components/projects/AIProjectWizard';
 
 const Projects = () => {
-  const { projects, createProject, loading } = useProjects();
+  const { projects, createProject, updateProject, deleteProject, loading } = useProjects();
   const { trackProjectCreated, trackFeatureUsed } = useAnalytics();
   
   const [activeTab, setActiveTab] = useState('all');
@@ -35,6 +36,24 @@ const Projects = () => {
     } catch (error) {
       console.error('Error creating project:', error);
     }
+  };
+
+  const handleEditProject = (project: Project) => {
+    console.log('Edit project:', project);
+    // TODO: Implement edit functionality
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    try {
+      await deleteProject(id);
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
+  const handleOpenProject = (project: Project) => {
+    console.log('Open project:', project);
+    // TODO: Implement project opening functionality
   };
 
   const filteredProjects = projects.filter(project => {
@@ -75,9 +94,18 @@ const Projects = () => {
       )}
 
       {filteredProjects.length > 0 ? (
-        <ProjectsGrid projects={filteredProjects} />
+        <ProjectsGrid 
+          projects={filteredProjects}
+          loading={false}
+          onEdit={handleEditProject}
+          onDelete={handleDeleteProject}
+          onOpen={handleOpenProject}
+        />
       ) : (
-        <ProjectsEmptyState onStartWizard={handleStartWizard} />
+        <ProjectsEmptyState 
+          onStartWizard={handleStartWizard}
+          onCreateProject={handleCreateProject}
+        />
       )}
 
       <ProjectDialog

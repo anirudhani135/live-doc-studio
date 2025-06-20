@@ -23,20 +23,11 @@ import React from "react";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      onError: (error) => {
-        errorHandler.logError(
-          error instanceof Error ? error : new Error(String(error)),
-          'react_query_error'
-        );
-      },
+      retry: 3,
+      staleTime: 5 * 60 * 1000, // 5 minutes
     },
     mutations: {
-      onError: (error) => {
-        errorHandler.logError(
-          error instanceof Error ? error : new Error(String(error)),
-          'react_query_mutation_error'
-        );
-      },
+      retry: 1,
     },
   },
 });
