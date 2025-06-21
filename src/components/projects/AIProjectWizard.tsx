@@ -85,7 +85,6 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
         ai_model: projectData.aiModel,
         metadata: {
           ai_model: projectData.aiModel,
-          project_type: projectData.projectType,
           ai_generated: true,
           creation_date: new Date().toISOString(),
           wizard_completed: true
