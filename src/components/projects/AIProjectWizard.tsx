@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Sparkles, Loader2 } from 'lucide-react';
@@ -248,9 +247,9 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
 
   const canProceed = () => {
     switch (currentStep) {
-      case 1: return projectData.name && projectData.description;
-      case 2: return projectData.aiModel;
-      case 3: return projectData.projectType;
+      case 1: return Boolean(projectData.name && projectData.description);
+      case 2: return Boolean(projectData.aiModel);
+      case 3: return Boolean(projectData.projectType);
       case 4: return projectData.techStack.length > 0;
       case 5: return !isGenerating;
       default: return true;
