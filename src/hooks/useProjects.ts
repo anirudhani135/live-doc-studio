@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Project } from '@/types/project';
@@ -26,8 +26,11 @@ export const useProjects = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const fetchProjects = async () => {
-    if (!user) return;
+  const fetchProjects = useCallback(async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -50,14 +53,25 @@ export const useProjects = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
 
-  const createProject = async (
+  const createProject = useCallback(async (
     projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>
   ) => {
     if (!user) return null;
 
     try {
+      // Optimistically update UI first
+      const optimisticProject: Project = {
+        id: `temp-${Date.now()}`,
+        ...projectData,
+        user_id: user.id,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      
+      setProjects(prev => [optimisticProject, ...prev]);
+
       const { data, error } = await supabase
         .from('projects')
         .insert([
@@ -71,7 +85,11 @@ export const useProjects = () => {
 
       if (error) throw error;
 
-      setProjects(prev => [data as Project, ...prev]);
+      // Replace optimistic update with real data
+      setProjects(prev => prev.map(p => 
+        p.id === optimisticProject.id ? (data as Project) : p
+      ));
+
       toast({
         title: "Success",
         description: "Project created successfully",
@@ -80,6 +98,8 @@ export const useProjects = () => {
       return data as Project;
     } catch (error) {
       console.error('Error creating project:', error);
+      // Remove optimistic update on error
+      setProjects(prev => prev.filter(p => !p.id.startsWith('temp-')));
       toast({
         title: "Error",
         description: "Failed to create project",
@@ -87,10 +107,15 @@ export const useProjects = () => {
       });
       return null;
     }
-  };
+  }, [user, toast]);
 
-  const updateProject = async (id: string, updates: Partial<Project>) => {
+  const updateProject = useCallback(async (id: string, updates: Partial<Project>) => {
     try {
+      // Optimistic update
+      setProjects(prev => prev.map(p => 
+        p.id === id ? { ...p, ...updates, updated_at: new Date().toISOString() } : p
+      ));
+
       const { data, error } = await supabase
         .from('projects')
         .update(updates)
@@ -100,7 +125,9 @@ export const useProjects = () => {
 
       if (error) throw error;
 
+      // Replace with server data
       setProjects(prev => prev.map(p => p.id === id ? (data as Project) : p));
+      
       toast({
         title: "Success",
         description: "Project updated successfully",
@@ -109,6 +136,8 @@ export const useProjects = () => {
       return data as Project;
     } catch (error) {
       console.error('Error updating project:', error);
+      // Revert optimistic update
+      await fetchProjects();
       toast({
         title: "Error",
         description: "Failed to update project",
@@ -116,18 +145,25 @@ export const useProjects = () => {
       });
       return null;
     }
-  };
+  }, [fetchProjects, toast]);
 
-  const deleteProject = async (id: string) => {
+  const deleteProject = useCallback(async (id: string) => {
     try {
+      // Optimistic removal
+      const originalProjects = projects;
+      setProjects(prev => prev.filter(p => p.id !== id));
+
       const { error } = await supabase
         .from('projects')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        // Revert on error
+        setProjects(originalProjects);
+        throw error;
+      }
 
-      setProjects(prev => prev.filter(p => p.id !== id));
       toast({
         title: "Success",
         description: "Project deleted successfully",
@@ -140,11 +176,11 @@ export const useProjects = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [projects, toast]);
 
   useEffect(() => {
     fetchProjects();
-  }, [user]);
+  }, [fetchProjects]);
 
   return {
     projects,

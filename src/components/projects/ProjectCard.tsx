@@ -1,7 +1,5 @@
 
-// Responsive padding / layout tweaks for card
-
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,44 +14,71 @@ interface ProjectCardProps {
   onOpen: (project: Project) => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, onOpen }) => {
-  const getTypeIcon = (type: Project['type']) => {
-    switch (type) {
-      case 'code_project':
-        return <Code className="h-4 w-4" />;
-      case 'documentation':
-        return <FileText className="h-4 w-4" />;
-      case 'api_spec':
-        return <Settings className="h-4 w-4" />;
-      default:
-        return <FileText className="h-4 w-4" />;
-    }
+/**
+ * Get the appropriate icon for project type
+ */
+const getTypeIcon = (type: Project['type']) => {
+  const iconMap = {
+    code_project: <Code className="h-4 w-4" />,
+    documentation: <FileText className="h-4 w-4" />,
+    api_spec: <Settings className="h-4 w-4" />,
   };
+  return iconMap[type] || <FileText className="h-4 w-4" />;
+};
 
-  const getStatusColor = (status: Project['status']) => {
-    switch (status) {
-      case 'draft':
-        return 'secondary';
-      case 'in_progress':
-        return 'default';
-      case 'completed':
-        return 'default';
-      case 'archived':
-        return 'secondary';
-      default:
-        return 'secondary';
-    }
+/**
+ * Get badge variant based on project status
+ */
+const getStatusVariant = (status: Project['status']) => {
+  const variantMap = {
+    draft: 'secondary' as const,
+    in_progress: 'default' as const,
+    completed: 'default' as const,
+    archived: 'secondary' as const,
   };
+  return variantMap[status] || 'secondary';
+};
+
+/**
+ * Optimized project card component with memoization
+ * Displays project information with responsive design
+ */
+const ProjectCard: React.FC<ProjectCardProps> = memo(({ 
+  project, 
+  onEdit, 
+  onDelete, 
+  onOpen 
+}) => {
+  // Memoize event handlers to prevent unnecessary re-renders
+  const handleEdit = useCallback(() => {
+    onEdit(project);
+  }, [onEdit, project]);
+
+  const handleDelete = useCallback(() => {
+    onDelete(project.id);
+  }, [onDelete, project.id]);
+
+  const handleOpen = useCallback(() => {
+    onOpen(project);
+  }, [onOpen, project]);
+
+  // Memoize computed values
+  const typeIcon = getTypeIcon(project.type);
+  const statusVariant = getStatusVariant(project.status);
+  const formattedDate = formatDistanceToNow(new Date(project.updated_at));
+  const displayedTechStack = project.tech_stack?.slice(0, 3) || [];
+  const additionalTechCount = (project.tech_stack?.length || 0) - 3;
 
   return (
     <Card className="hover:shadow-md transition-shadow flex flex-col h-full">
       <CardHeader className="pb-3">
+        {/* Header with project type icon, name, and status */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            {getTypeIcon(project.type)}
+            {typeIcon}
             <CardTitle className="text-base sm:text-lg">{project.name}</CardTitle>
           </div>
-          <Badge variant={getStatusColor(project.status)} className="text-xs">
+          <Badge variant={statusVariant} className="text-xs">
             {project.status.replace('_', ' ')}
           </Badge>
         </div>
@@ -63,29 +88,32 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
       </CardHeader>
       
       <CardContent className="space-y-3 flex-1 flex flex-col justify-between">
+        {/* Technology stack badges */}
         <div className="flex flex-wrap gap-1">
-          {project.tech_stack?.slice(0, 3).map((tech) => (
+          {displayedTechStack.map((tech) => (
             <Badge key={tech} variant="outline" className="text-xs">
               {tech}
             </Badge>
           ))}
-          {project.tech_stack?.length > 3 && (
+          {additionalTechCount > 0 && (
             <Badge variant="outline" className="text-xs">
-              +{project.tech_stack.length - 3} more
+              +{additionalTechCount} more
             </Badge>
           )}
         </div>
         
+        {/* AI model and last updated info */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm text-muted-foreground gap-1">
           <span>AI Model: {project.ai_model.toUpperCase()}</span>
-          <span>{formatDistanceToNow(new Date(project.updated_at))} ago</span>
+          <span>{formattedDate} ago</span>
         </div>
         
+        {/* Action buttons */}
         <div className="flex flex-col sm:flex-row gap-2">
           <Button 
             variant="default" 
             size="sm" 
-            onClick={() => onOpen(project)}
+            onClick={handleOpen}
             className="flex-1"
           >
             <ExternalLink className="h-3 w-3 mr-1" />
@@ -94,7 +122,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => onEdit(project)}
+            onClick={handleEdit}
             className="flex-1 sm:flex-none"
           >
             <Settings className="h-3 w-3" />
@@ -102,7 +130,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => onDelete(project.id)}
+            onClick={handleDelete}
             className="text-red-600 hover:text-red-700 flex-1 sm:flex-none"
           >
             <Trash2 className="h-3 w-3" />
@@ -111,6 +139,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, on
       </CardContent>
     </Card>
   );
-};
+});
+
+ProjectCard.displayName = 'ProjectCard';
 
 export default ProjectCard;
