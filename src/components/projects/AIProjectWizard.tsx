@@ -1,7 +1,7 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Sparkles, Loader2 } from 'lucide-react';
-import { aiContentService } from '@/lib/ai-content-service';
 import { useToast } from '@/hooks/use-toast';
 import { useProjects } from '@/hooks/useProjects';
 import { Project } from '@/types/project';
@@ -43,7 +43,6 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
     'AI Model Selection', 
     'Project Type',
     'Technical Requirements',
-    'AI Analysis',
     'Final Review'
   ];
 
@@ -66,48 +65,17 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
 
   const handleNextStep = async () => {
     if (currentStep === 5) {
-      await performAIAnalysis();
-    } else if (currentStep === 6) {
       await createProjectWithAI();
     } else {
       setCurrentStep(prev => prev + 1);
     }
   };
 
-  const performAIAnalysis = async () => {
-    setIsGenerating(true);
-    try {
-      const specResponse = await aiContentService.generateSpecFromDescription(
-        `${projectData.description}\n\nProject Type: ${projectData.projectType}\nTech Stack: ${projectData.techStack.join(', ')}`
-      );
-      
-      setProjectData(prev => ({
-        ...prev,
-        generatedSpec: specResponse.specification,
-        architecture: specResponse.architecture,
-        timeline: specResponse.timeline_estimate
-      }));
-
-      toast({
-        title: "AI Analysis Complete",
-        description: "Generated comprehensive project specification and architecture",
-      });
-
-      setCurrentStep(6);
-    } catch (error) {
-      toast({
-        title: "Analysis Failed",
-        description: "Failed to generate AI analysis",
-        variant: "destructive",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
   const createProjectWithAI = async () => {
     setIsGenerating(true);
     try {
+      console.log('Creating project with data:', projectData);
+      
       await createProject({
         name: projectData.name,
         description: projectData.description,
@@ -117,25 +85,25 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
         ai_model: projectData.aiModel,
         metadata: {
           ai_model: projectData.aiModel,
-          generated_spec: projectData.generatedSpec,
-          architecture: projectData.architecture,
-          timeline_estimate: projectData.timeline,
+          project_type: projectData.projectType,
           ai_generated: true,
-          creation_date: new Date().toISOString()
+          creation_date: new Date().toISOString(),
+          wizard_completed: true
         }
       });
 
       toast({
         title: "Project Created Successfully",
-        description: "Your AI-powered project has been created with comprehensive documentation",
+        description: "Your AI-powered project has been created successfully",
       });
 
       onOpenChange(false);
       resetWizard();
     } catch (error) {
+      console.error('Project creation error:', error);
       toast({
         title: "Creation Failed",
-        description: "Failed to create project",
+        description: "Failed to create project. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -202,24 +170,6 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
         );
       case 5:
         return (
-          <div className="space-y-4 text-center">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-              {isGenerating ? (
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              ) : (
-                <Sparkles className="h-8 w-8 text-primary" />
-              )}
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold">AI Analysis in Progress</h3>
-              <p className="text-muted-foreground">
-                Our AI is analyzing your project requirements and generating comprehensive specifications...
-              </p>
-            </div>
-          </div>
-        );
-      case 6:
-        return (
           <div className="space-y-4">
             <h3 className="font-semibold">Project Summary</h3>
             <div className="space-y-3">
@@ -228,16 +178,26 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
                 <div className="text-sm text-muted-foreground">{projectData.name}</div>
               </div>
               <div className="p-3 bg-muted rounded-lg">
+                <div className="text-sm font-medium">Project Type</div>
+                <div className="text-sm text-muted-foreground">{projectData.projectType}</div>
+              </div>
+              <div className="p-3 bg-muted rounded-lg">
                 <div className="text-sm font-medium">AI Model</div>
                 <div className="text-sm text-muted-foreground">{projectData.aiModel.toUpperCase()}</div>
               </div>
-              {projectData.timeline && (
-                <div className="p-3 bg-muted rounded-lg">
-                  <div className="text-sm font-medium">Timeline Estimate</div>
-                  <div className="text-sm text-muted-foreground">{projectData.timeline}</div>
+              <div className="p-3 bg-muted rounded-lg">
+                <div className="text-sm font-medium">Tech Stack</div>
+                <div className="text-sm text-muted-foreground">
+                  {projectData.techStack.length > 0 ? projectData.techStack.join(', ') : 'None selected'}
                 </div>
-              )}
+              </div>
             </div>
+            {isGenerating && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Creating your project...
+              </div>
+            )}
           </div>
         );
       default:
@@ -250,7 +210,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
       case 1: return Boolean(projectData.name && projectData.description);
       case 2: return Boolean(projectData.aiModel);
       case 3: return Boolean(projectData.projectType);
-      case 4: return projectData.techStack.length > 0;
+      case 4: return true; // Tech stack is optional
       case 5: return !isGenerating;
       default: return true;
     }

@@ -1,10 +1,8 @@
 
-import React, { useState } from 'react';
-import { Label } from '@/components/ui/label';
+import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Search, Check } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Check } from 'lucide-react';
 
 interface TechStackStepProps {
   selectedTech: string[];
@@ -15,152 +13,97 @@ const TechStackStep: React.FC<TechStackStepProps> = ({
   selectedTech,
   onToggle
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const technologies = [
-    { name: 'React', category: 'Frontend', popular: true },
-    { name: 'TypeScript', category: 'Language', popular: true },
-    { name: 'Node.js', category: 'Backend', popular: true },
-    { name: 'PostgreSQL', category: 'Database', popular: true },
-    { name: 'Supabase', category: 'Backend', popular: true },
-    { name: 'Tailwind CSS', category: 'Styling', popular: true },
-    { name: 'Python', category: 'Language', popular: true },
-    { name: 'Docker', category: 'DevOps', popular: false },
-    { name: 'AWS', category: 'Cloud', popular: false },
-    { name: 'Firebase', category: 'Backend', popular: false },
-    { name: 'MongoDB', category: 'Database', popular: false },
-    { name: 'Redis', category: 'Database', popular: false },
-    { name: 'Next.js', category: 'Frontend', popular: false },
-    { name: 'Vue.js', category: 'Frontend', popular: false },
-    { name: 'Express.js', category: 'Backend', popular: false },
-    { name: 'GraphQL', category: 'API', popular: false },
+  const techCategories = [
+    {
+      category: 'Frontend',
+      technologies: [
+        'React', 'Vue.js', 'Angular', 'TypeScript', 'JavaScript',
+        'Tailwind CSS', 'Bootstrap', 'Sass', 'Next.js', 'Nuxt.js'
+      ]
+    },
+    {
+      category: 'Backend',
+      technologies: [
+        'Node.js', 'Express', 'Python', 'Django', 'FastAPI',
+        'PHP', 'Laravel', 'Ruby', 'Rails', 'Java', 'Spring'
+      ]
+    },
+    {
+      category: 'Database',
+      technologies: [
+        'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'SQLite',
+        'Supabase', 'Firebase', 'PlanetScale', 'Prisma'
+      ]
+    },
+    {
+      category: 'Cloud & Tools',
+      technologies: [
+        'AWS', 'Vercel', 'Netlify', 'Docker', 'Git',
+        'GitHub Actions', 'Stripe', 'Auth0', 'Sendgrid'
+      ]
+    }
   ];
 
-  const filteredTechnologies = technologies.filter(tech =>
-    tech.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tech.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const categories = [...new Set(technologies.map(tech => tech.category))];
-
-  const getTechsByCategory = (category: string) => 
-    filteredTechnologies.filter(tech => tech.category === category);
+  const isSelected = (tech: string) => selectedTech.includes(tech);
 
   return (
-    <motion.div 
-      className="space-y-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="space-y-2">
-        <Label className="text-sm font-medium">Technology Stack</Label>
-        <p className="text-sm text-muted-foreground">
-          Select the technologies you plan to use in your project
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Technology Stack</h3>
+        <p className="text-muted-foreground mb-6">
+          Select the technologies you want to use or are familiar with. Don't worry if you're not sure - our AI will make recommendations.
         </p>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search technologies..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
+      <div className="space-y-6">
+        {techCategories.map((category) => (
+          <Card key={category.category}>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">{category.category}</CardTitle>
+              <CardDescription>
+                Choose from popular {category.category.toLowerCase()} technologies
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {category.technologies.map((tech) => (
+                  <Badge
+                    key={tech}
+                    variant={isSelected(tech) ? 'default' : 'outline'}
+                    className={`cursor-pointer transition-all ${
+                      isSelected(tech)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'hover:bg-primary hover:text-primary-foreground'
+                    }`}
+                    onClick={() => onToggle(tech)}
+                  >
+                    {isSelected(tech) && <Check className="h-3 w-3 mr-1" />}
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {selectedTech.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          className="space-y-2"
-        >
-          <Label className="text-sm font-medium text-primary">Selected ({selectedTech.length})</Label>
-          <div className="flex flex-wrap gap-2">
-            <AnimatePresence>
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Selected Technologies</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
               {selectedTech.map((tech) => (
-                <motion.div
-                  key={tech}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Badge
-                    variant="default"
-                    className="cursor-pointer hover:bg-primary/80 transition-colors flex items-center gap-1"
-                    onClick={() => onToggle(tech)}
-                  >
-                    <Check className="h-3 w-3" />
-                    {tech}
-                  </Badge>
-                </motion.div>
+                <Badge key={tech} variant="default">
+                  {tech}
+                </Badge>
               ))}
-            </AnimatePresence>
-          </div>
-        </motion.div>
+            </div>
+          </CardContent>
+        </Card>
       )}
-
-      <div className="space-y-4">
-        {categories.map((category) => {
-          const categoryTechs = getTechsByCategory(category);
-          if (categoryTechs.length === 0) return null;
-
-          return (
-            <motion.div
-              key={category}
-              className="space-y-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {category}
-              </Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {categoryTechs.map((tech) => {
-                  const isSelected = selectedTech.includes(tech.name);
-                  return (
-                    <motion.div
-                      key={tech.name}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Badge
-                        variant={isSelected ? 'default' : 'outline'}
-                        className={`cursor-pointer justify-center p-3 text-center transition-all duration-200 w-full relative ${
-                          isSelected 
-                            ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                            : 'hover:bg-accent hover:text-accent-foreground border-2'
-                        } ${tech.popular ? 'border-amber-200 bg-amber-50/50' : ''}`}
-                        onClick={() => onToggle(tech.name)}
-                      >
-                        {tech.popular && !isSelected && (
-                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full"></div>
-                        )}
-                        {isSelected && <Check className="h-3 w-3 mr-1" />}
-                        {tech.name}
-                      </Badge>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {selectedTech.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-8 text-muted-foreground"
-        >
-          <p className="text-sm">Select at least one technology to continue</p>
-        </motion.div>
-      )}
-    </motion.div>
+    </div>
   );
 };
 
