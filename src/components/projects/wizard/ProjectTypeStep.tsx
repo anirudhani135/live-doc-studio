@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Check } from 'lucide-react';
 
 interface ProjectTypeStepProps {
@@ -16,63 +17,51 @@ const ProjectTypeStep: React.FC<ProjectTypeStepProps> = ({
     {
       id: 'web-app',
       name: 'Web Application',
-      description: 'Interactive web applications with modern frameworks',
-      examples: ['React SPA', 'Vue.js app', 'Angular application']
+      description: 'Full-stack web application with frontend and backend',
+      features: ['Responsive design', 'User authentication', 'Database integration']
     },
     {
       id: 'mobile-app',
       name: 'Mobile Application',
-      description: 'Mobile-first applications and progressive web apps',
-      examples: ['React Native', 'Progressive Web App', 'Mobile-responsive']
-    },
-    {
-      id: 'api',
-      name: 'API Service',
-      description: 'RESTful APIs and microservices',
-      examples: ['REST API', 'GraphQL', 'Microservice']
+      description: 'Cross-platform mobile app for iOS and Android',
+      features: ['Native performance', 'Offline support', 'Push notifications']
     },
     {
       id: 'saas',
       name: 'SaaS Platform',
-      description: 'Software as a Service platforms with subscriptions',
-      examples: ['Dashboard', 'Multi-tenant', 'Subscription model']
+      description: 'Software as a Service platform with subscription model',
+      features: ['Multi-tenancy', 'Billing integration', 'Analytics dashboard']
     },
     {
       id: 'ecommerce',
-      name: 'E-commerce',
-      description: 'Online stores and marketplace platforms',
-      examples: ['Online store', 'Marketplace', 'Shopping cart']
-    },
-    {
-      id: 'cms',
-      name: 'Content Management',
-      description: 'Content management systems and blogs',
-      examples: ['Blog platform', 'CMS', 'Content portal']
+      name: 'E-commerce Store',
+      description: 'Online store with payment processing and inventory',
+      features: ['Payment gateway', 'Inventory management', 'Order tracking']
     },
     {
       id: 'analytics',
       name: 'Analytics Dashboard',
-      description: 'Data visualization and reporting tools',
-      examples: ['Business intelligence', 'Reporting', 'Data visualization']
+      description: 'Data visualization and reporting platform',
+      features: ['Real-time charts', 'Custom reports', 'Data export']
     },
     {
-      id: 'other',
-      name: 'Other',
-      description: 'Custom or specialized applications',
-      examples: ['Custom solution', 'Specialized tool', 'Unique requirements']
+      id: 'api',
+      name: 'API Service',
+      description: 'RESTful API or GraphQL service',
+      features: ['API documentation', 'Rate limiting', 'Monitoring']
     }
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Project Type</h3>
+        <h3 className="text-lg font-semibold mb-4">Select Project Type</h3>
         <p className="text-muted-foreground mb-6">
-          What type of project are you building? This helps us recommend the right technologies and architecture.
+          Choose the type of project you want to build. This helps our AI provide better recommendations.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {projectTypes.map((type) => (
           <Card
             key={type.id}
@@ -93,9 +82,12 @@ const ProjectTypeStep: React.FC<ProjectTypeStepProps> = ({
               <CardDescription>{type.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-sm text-muted-foreground">
-                <span className="font-medium">Examples: </span>
-                {type.examples.join(', ')}
+              <div className="flex flex-wrap gap-1">
+                {type.features.map((feature) => (
+                  <Badge key={feature} variant="outline" className="text-xs">
+                    {feature}
+                  </Badge>
+                ))}
               </div>
             </CardContent>
           </Card>

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check } from 'lucide-react';
 
 interface TechStackStepProps {
@@ -15,71 +15,82 @@ const TechStackStep: React.FC<TechStackStepProps> = ({
 }) => {
   const techCategories = [
     {
-      category: 'Frontend',
+      name: 'Frontend',
       technologies: [
-        'React', 'Vue.js', 'Angular', 'TypeScript', 'JavaScript',
-        'Tailwind CSS', 'Bootstrap', 'Sass', 'Next.js', 'Nuxt.js'
+        { id: 'react', name: 'React', description: 'Popular UI library' },
+        { id: 'vue', name: 'Vue.js', description: 'Progressive framework' },
+        { id: 'angular', name: 'Angular', description: 'Full framework' },
+        { id: 'svelte', name: 'Svelte', description: 'Compile-time framework' }
       ]
     },
     {
-      category: 'Backend',
+      name: 'Backend',
       technologies: [
-        'Node.js', 'Express', 'Python', 'Django', 'FastAPI',
-        'PHP', 'Laravel', 'Ruby', 'Rails', 'Java', 'Spring'
+        { id: 'nodejs', name: 'Node.js', description: 'JavaScript runtime' },
+        { id: 'python', name: 'Python', description: 'Django/Flask' },
+        { id: 'java', name: 'Java', description: 'Spring Boot' },
+        { id: 'dotnet', name: '.NET', description: 'Microsoft stack' }
       ]
     },
     {
-      category: 'Database',
+      name: 'Database',
       technologies: [
-        'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'SQLite',
-        'Supabase', 'Firebase', 'PlanetScale', 'Prisma'
+        { id: 'postgresql', name: 'PostgreSQL', description: 'Relational DB' },
+        { id: 'mongodb', name: 'MongoDB', description: 'Document DB' },
+        { id: 'mysql', name: 'MySQL', description: 'Popular SQL DB' },
+        { id: 'redis', name: 'Redis', description: 'In-memory store' }
       ]
     },
     {
-      category: 'Cloud & Tools',
+      name: 'Cloud & DevOps',
       technologies: [
-        'AWS', 'Vercel', 'Netlify', 'Docker', 'Git',
-        'GitHub Actions', 'Stripe', 'Auth0', 'Sendgrid'
+        { id: 'aws', name: 'AWS', description: 'Amazon cloud' },
+        { id: 'docker', name: 'Docker', description: 'Containerization' },
+        { id: 'kubernetes', name: 'Kubernetes', description: 'Orchestration' },
+        { id: 'vercel', name: 'Vercel', description: 'Deployment platform' }
       ]
     }
   ];
 
-  const isSelected = (tech: string) => selectedTech.includes(tech);
-
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Technology Stack</h3>
+        <h3 className="text-lg font-semibold mb-4">Select Technology Stack</h3>
         <p className="text-muted-foreground mb-6">
-          Select the technologies you want to use or are familiar with. Don't worry if you're not sure - our AI will make recommendations.
+          Choose the technologies you want to use. Don't worry, you can change these later.
         </p>
       </div>
 
       <div className="space-y-6">
         {techCategories.map((category) => (
-          <Card key={category.category}>
+          <Card key={category.name}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">{category.category}</CardTitle>
-              <CardDescription>
-                Choose from popular {category.category.toLowerCase()} technologies
-              </CardDescription>
+              <CardTitle className="text-base">{category.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid gap-3 sm:grid-cols-2">
                 {category.technologies.map((tech) => (
-                  <Badge
-                    key={tech}
-                    variant={isSelected(tech) ? 'default' : 'outline'}
-                    className={`cursor-pointer transition-all ${
-                      isSelected(tech)
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-primary hover:text-primary-foreground'
+                  <div
+                    key={tech.id}
+                    className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                      selectedTech.includes(tech.id)
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border hover:border-primary/50'
                     }`}
-                    onClick={() => onToggle(tech)}
+                    onClick={() => onToggle(tech.id)}
                   >
-                    {isSelected(tech) && <Check className="h-3 w-3 mr-1" />}
-                    {tech}
-                  </Badge>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">{tech.name}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {tech.description}
+                        </div>
+                      </div>
+                      {selectedTech.includes(tech.id) && (
+                        <Check className="h-4 w-4 text-primary" />
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             </CardContent>
@@ -87,22 +98,20 @@ const TechStackStep: React.FC<TechStackStepProps> = ({
         ))}
       </div>
 
-      {selectedTech.length > 0 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Selected Technologies</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {selectedTech.map((tech) => (
-                <Badge key={tech} variant="default">
-                  {tech}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <div className="p-4 bg-muted rounded-lg">
+        <div className="text-sm font-medium mb-2">Selected Technologies:</div>
+        <div className="flex flex-wrap gap-1">
+          {selectedTech.length > 0 ? (
+            selectedTech.map((tech) => (
+              <Badge key={tech} variant="default" className="text-xs">
+                {tech}
+              </Badge>
+            ))
+          ) : (
+            <span className="text-sm text-muted-foreground">None selected</span>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

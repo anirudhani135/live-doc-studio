@@ -11,8 +11,8 @@ import ProjectDialog from '@/components/projects/ProjectDialog';
 import AIProjectWizard from '@/components/projects/AIProjectWizard';
 
 /**
- * Main Projects page component
- * Manages project creation, editing, and filtering with optimized performance
+ * Main Projects page component with optimized performance
+ * Uses memoization and optimized re-rendering patterns
  */
 const Projects = () => {
   const { projects, createProject, updateProject, deleteProject, loading } = useProjects();
@@ -24,6 +24,8 @@ const Projects = () => {
 
   // Memoize filtered projects to prevent unnecessary recalculations
   const filteredProjects = useMemo(() => {
+    if (loading || !Array.isArray(projects)) return [];
+    
     return projects.filter(project => {
       switch (activeTab) {
         case 'recent': {
@@ -37,7 +39,7 @@ const Projects = () => {
           return true;
       }
     });
-  }, [projects, activeTab]);
+  }, [projects, activeTab, loading]);
 
   // Memoized event handlers to prevent unnecessary re-renders
   const handleCreateProject = useCallback(() => {
@@ -83,7 +85,7 @@ const Projects = () => {
   }, []);
 
   // Show loading spinner during initial load
-  if (loading) {
+  if (loading && !projects.length) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -97,13 +99,13 @@ const Projects = () => {
       <ProjectsHeader
         activeTab={activeTab}
         onTabChange={handleTabChange}
-        projectCount={projects.length}
+        projectCount={projects?.length || 0}
         onCreateProject={handleCreateProject}
         onStartWizard={handleStartWizard}
       />
 
       {/* Banner for AI wizard promotion (only show when projects exist) */}
-      {projects.length > 0 && (
+      {projects?.length > 0 && (
         <div className="mb-6">
           <ProjectsBanner onStartWizard={handleStartWizard} />
         </div>
@@ -113,7 +115,7 @@ const Projects = () => {
       {filteredProjects.length > 0 ? (
         <ProjectsGrid 
           projects={filteredProjects}
-          loading={false}
+          loading={loading}
           onEdit={handleEditProject}
           onDelete={handleDeleteProject}
           onOpen={handleOpenProject}

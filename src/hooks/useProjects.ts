@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Project } from '@/types/project';
@@ -23,16 +23,21 @@ type ProjectRow = {
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
+  // Memoize the fetch function to prevent unnecessary recreations
   const fetchProjects = useCallback(async () => {
     if (!user) {
+      setProjects([]);
       setLoading(false);
       return;
     }
 
     setLoading(true);
+    setError(null);
+    
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -41,13 +46,21 @@ export const useProjects = () => {
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      // Cast tech_stack to [] for compatibility
-      setProjects((data as Project[]) || []);
+      
+      // Ensure data is valid and properly typed
+      const validProjects = (data || []).map(project => ({
+        ...project,
+        tech_stack: project.tech_stack || [],
+        metadata: project.metadata || {}
+      })) as Project[];
+      
+      setProjects(validProjects);
     } catch (error) {
       console.error('Error fetching projects:', error);
+      setError('Failed to fetch projects');
       toast({
         title: "Error",
-        description: "Failed to fetch projects",
+        description: "Failed to fetch projects. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -61,51 +74,54 @@ export const useProjects = () => {
     if (!user) return null;
 
     try {
-      // Optimistically update UI first
-      const optimisticProject: Project = {
-        id: `temp-${Date.now()}`,
-        ...projectData,
-        user_id: user.id,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      setLoading(true);
       
-      setProjects(prev => [optimisticProject, ...prev]);
+      // Prepare the data for insertion
+      const insertData = {
+        name: projectData.name,
+        description: projectData.description,
+        type: projectData.type,
+        status: projectData.status || 'draft',
+        tech_stack: projectData.tech_stack || [],
+        ai_model: projectData.ai_model || 'gpt-4',
+        metadata: projectData.metadata || {},
+        user_id: user.id
+      };
 
       const { data, error } = await supabase
         .from('projects')
-        .insert([
-          {
-            ...projectData,
-            user_id: user.id
-          }
-        ])
+        .insert([insertData])
         .select()
         .single();
 
       if (error) throw error;
 
-      // Replace optimistic update with real data
-      setProjects(prev => prev.map(p => 
-        p.id === optimisticProject.id ? (data as Project) : p
-      ));
+      // Add the new project to the local state
+      const newProject = {
+        ...data,
+        tech_stack: data.tech_stack || [],
+        metadata: data.metadata || {}
+      } as Project;
+      
+      setProjects(prev => [newProject, ...prev]);
 
       toast({
         title: "Success",
         description: "Project created successfully",
       });
 
-      return data as Project;
+      return newProject;
     } catch (error) {
       console.error('Error creating project:', error);
-      // Remove optimistic update on error
-      setProjects(prev => prev.filter(p => !p.id.startsWith('temp-')));
+      setError('Failed to create project');
       toast({
         title: "Error",
-        description: "Failed to create project",
+        description: "Failed to create project. Please try again.",
         variant: "destructive",
       });
       return null;
+    } finally {
+      setLoading(false);
     }
   }, [user, toast]);
 
@@ -118,7 +134,15 @@ export const useProjects = () => {
 
       const { data, error } = await supabase
         .from('projects')
-        .update(updates)
+        .update({
+          name: updates.name,
+          description: updates.description,
+          type: updates.type,
+          status: updates.status,
+          tech_stack: updates.tech_stack,
+          ai_model: updates.ai_model,
+          metadata: updates.metadata
+        })
         .eq('id', id)
         .select()
         .single();
@@ -126,7 +150,9 @@ export const useProjects = () => {
       if (error) throw error;
 
       // Replace with server data
-      setProjects(prev => prev.map(p => p.id === id ? (data as Project) : p));
+      setProjects(prev => prev.map(p => 
+        p.id === id ? { ...data, tech_stack: data.tech_stack || [], metadata: data.metadata || {} } as Project : p
+      ));
       
       toast({
         title: "Success",
@@ -136,11 +162,11 @@ export const useProjects = () => {
       return data as Project;
     } catch (error) {
       console.error('Error updating project:', error);
-      // Revert optimistic update
+      // Revert optimistic update by refetching
       await fetchProjects();
       toast({
         title: "Error",
-        description: "Failed to update project",
+        description: "Failed to update project. Please try again.",
         variant: "destructive",
       });
       return null;
@@ -172,22 +198,27 @@ export const useProjects = () => {
       console.error('Error deleting project:', error);
       toast({
         title: "Error",
-        description: "Failed to delete project",
+        description: "Failed to delete project. Please try again.",
         variant: "destructive",
       });
     }
   }, [projects, toast]);
 
+  // Effect to fetch projects when user changes
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
-  return {
+  // Memoize the returned object to prevent unnecessary re-renders
+  const memoizedReturn = useMemo(() => ({
     projects,
     loading,
+    error,
     createProject,
     updateProject,
     deleteProject,
     refetch: fetchProjects
-  };
+  }), [projects, loading, error, createProject, updateProject, deleteProject, fetchProjects]);
+
+  return memoizedReturn;
 };
