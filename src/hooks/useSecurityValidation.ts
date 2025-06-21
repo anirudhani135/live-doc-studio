@@ -34,7 +34,7 @@ export const useSecurityValidation = () => {
     // Check for SQL injection patterns
     const sqlPatterns = [
       /(\bselect\b|\binsert\b|\bupdate\b|\bdelete\b|\bdrop\b|\bunion\b).*\bfrom\b/gi,
-      /['"].*[;].*['"/gi,
+      /['"].*[;].*['"]?/gi,
       /\b(or|and)\s+['"]?\d+['"]?\s*=\s*['"]?\d+['"]?/gi
     ];
 
