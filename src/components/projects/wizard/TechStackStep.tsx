@@ -1,115 +1,121 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { X, Plus } from 'lucide-react';
 
 interface TechStackStepProps {
-  selectedTech: string[];
-  onToggle: (tech: string) => void;
+  selectedStack: string[];
+  onStackChange: (stack: string[]) => void;
 }
 
-const TechStackStep: React.FC<TechStackStepProps> = ({
-  selectedTech,
-  onToggle
-}) => {
-  const techCategories = [
-    {
-      name: 'Frontend',
-      technologies: [
-        { id: 'react', name: 'React', description: 'Popular UI library' },
-        { id: 'vue', name: 'Vue.js', description: 'Progressive framework' },
-        { id: 'angular', name: 'Angular', description: 'Full framework' },
-        { id: 'svelte', name: 'Svelte', description: 'Compile-time framework' }
-      ]
-    },
-    {
-      name: 'Backend',
-      technologies: [
-        { id: 'nodejs', name: 'Node.js', description: 'JavaScript runtime' },
-        { id: 'python', name: 'Python', description: 'Django/Flask' },
-        { id: 'java', name: 'Java', description: 'Spring Boot' },
-        { id: 'dotnet', name: '.NET', description: 'Microsoft stack' }
-      ]
-    },
-    {
-      name: 'Database',
-      technologies: [
-        { id: 'postgresql', name: 'PostgreSQL', description: 'Relational DB' },
-        { id: 'mongodb', name: 'MongoDB', description: 'Document DB' },
-        { id: 'mysql', name: 'MySQL', description: 'Popular SQL DB' },
-        { id: 'redis', name: 'Redis', description: 'In-memory store' }
-      ]
-    },
-    {
-      name: 'Cloud & DevOps',
-      technologies: [
-        { id: 'aws', name: 'AWS', description: 'Amazon cloud' },
-        { id: 'docker', name: 'Docker', description: 'Containerization' },
-        { id: 'kubernetes', name: 'Kubernetes', description: 'Orchestration' },
-        { id: 'vercel', name: 'Vercel', description: 'Deployment platform' }
-      ]
+const popularTechnologies = [
+  'React', 'TypeScript', 'Node.js', 'Python', 'JavaScript', 'Next.js',
+  'Vue.js', 'Angular', 'Express', 'FastAPI', 'PostgreSQL', 'MongoDB',
+  'MySQL', 'Redis', 'Docker', 'AWS', 'Firebase', 'Supabase',
+  'Tailwind CSS', 'Bootstrap', 'Material UI', 'Chakra UI'
+];
+
+const TechStackStep: React.FC<TechStackStepProps> = ({ selectedStack, onStackChange }) => {
+  const [customTech, setCustomTech] = useState('');
+
+  const addTechnology = (tech: string) => {
+    if (tech && !selectedStack.includes(tech)) {
+      onStackChange([...selectedStack, tech]);
     }
-  ];
+  };
+
+  const removeTechnology = (tech: string) => {
+    onStackChange(selectedStack.filter(t => t !== tech));
+  };
+
+  const handleAddCustom = () => {
+    if (customTech.trim()) {
+      addTechnology(customTech.trim());
+      setCustomTech('');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddCustom();
+    }
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Select Technology Stack</h3>
-        <p className="text-muted-foreground mb-6">
-          Choose the technologies you want to use. Don't worry, you can change these later.
+        <h3 className="text-lg font-semibold mb-2">Technology Stack</h3>
+        <p className="text-muted-foreground">
+          Select the technologies you want to use or plan to integrate in your project.
         </p>
       </div>
 
-      <div className="space-y-6">
-        {techCategories.map((category) => (
-          <Card key={category.name}>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">{category.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {category.technologies.map((tech) => (
-                  <div
-                    key={tech.id}
-                    className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                      selectedTech.includes(tech.id)
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                    onClick={() => onToggle(tech.id)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium">{tech.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {tech.description}
-                        </div>
-                      </div>
-                      {selectedTech.includes(tech.id) && (
-                        <Check className="h-4 w-4 text-primary" />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="p-4 bg-muted rounded-lg">
-        <div className="text-sm font-medium mb-2">Selected Technologies:</div>
-        <div className="flex flex-wrap gap-1">
-          {selectedTech.length > 0 ? (
-            selectedTech.map((tech) => (
-              <Badge key={tech} variant="default" className="text-xs">
+      {selectedStack.length > 0 && (
+        <div className="space-y-2">
+          <Label>Selected Technologies</Label>
+          <div className="flex flex-wrap gap-2">
+            {selectedStack.map((tech) => (
+              <Badge key={tech} variant="default" className="gap-1">
                 {tech}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-4 w-4 p-0 hover:bg-destructive/20"
+                  onClick={() => removeTechnology(tech)}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </Badge>
-            ))
-          ) : (
-            <span className="text-sm text-muted-foreground">None selected</span>
-          )}
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label>Add Custom Technology</Label>
+          <div className="flex gap-2">
+            <Input
+              value={customTech}
+              onChange={(e) => setCustomTech(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Enter technology name"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAddCustom}
+              disabled={!customTech.trim()}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Popular Technologies</Label>
+          <div className="flex flex-wrap gap-2">
+            {popularTechnologies.map((tech) => {
+              const isSelected = selectedStack.includes(tech);
+              return (
+                <Badge
+                  key={tech}
+                  variant={isSelected ? "default" : "secondary"}
+                  className={`cursor-pointer transition-colors ${
+                    isSelected ? '' : 'hover:bg-primary hover:text-primary-foreground'
+                  }`}
+                  onClick={() => isSelected ? removeTechnology(tech) : addTechnology(tech)}
+                >
+                  {tech}
+                  {isSelected && <X className="h-3 w-3 ml-1" />}
+                </Badge>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -5,21 +5,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Project } from '@/types/project';
 import { useToast } from '@/hooks/use-toast';
 
-// Use the Supabase generated types for row/insert/update
-type ProjectRow = {
-  id: string;
-  name: string;
-  description: string | null;
-  type: 'code_project' | 'documentation' | 'api_spec';
-  status: 'draft' | 'in_progress' | 'completed' | 'archived';
-  tech_stack: string[] | null;
-  ai_model: 'gpt-4' | 'claude' | 'gemini';
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-  metadata: any;
-};
-
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,19 +12,10 @@ export const useProjects = () => {
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
 
-  console.log('useProjects - Auth state:', { user: !!user, authLoading, projectsCount: projects.length });
-
-  // Memoize the fetch function to prevent unnecessary recreations
+  // Memoize the fetch function with stable dependencies
   const fetchProjects = useCallback(async () => {
-    // Don't fetch if auth is still loading
-    if (authLoading) {
-      console.log('useProjects - Auth still loading, skipping fetch');
-      return;
-    }
-
-    // If no user, clear projects and stop loading
-    if (!user) {
-      console.log('useProjects - No user, clearing projects');
+    // Don't fetch if auth is still loading or no user
+    if (authLoading || !user) {
       setProjects([]);
       setLoading(false);
       setError(null);
@@ -64,7 +40,6 @@ export const useProjects = () => {
       
       console.log('useProjects - Fetch successful, projects:', data?.length || 0);
       
-      // Ensure data is valid and properly typed
       const validProjects = (data || []).map(project => ({
         ...project,
         tech_stack: project.tech_stack || [],
@@ -75,7 +50,7 @@ export const useProjects = () => {
     } catch (error) {
       console.error('useProjects - Error fetching projects:', error);
       setError('Failed to fetch projects');
-      setProjects([]); // Clear projects on error
+      setProjects([]);
       toast({
         title: "Error",
         description: "Failed to fetch projects. Please try again.",
@@ -84,7 +59,7 @@ export const useProjects = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, authLoading, toast]);
+  }, [user?.id, authLoading, toast]); // Only depend on user.id, not the entire user object
 
   const createProject = useCallback(async (
     projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>
@@ -104,7 +79,6 @@ export const useProjects = () => {
       
       console.log('useProjects - Creating project:', projectData);
       
-      // Prepare the data for insertion
       const insertData = {
         name: projectData.name,
         description: projectData.description,
@@ -129,7 +103,6 @@ export const useProjects = () => {
 
       console.log('useProjects - Project created successfully:', data);
 
-      // Add the new project to the local state
       const newProject = {
         ...data,
         tech_stack: data.tech_stack || [],
@@ -156,7 +129,7 @@ export const useProjects = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, toast]);
+  }, [user?.id, toast]);
 
   const updateProject = useCallback(async (id: string, updates: Partial<Project>) => {
     if (!user) return null;
@@ -164,7 +137,6 @@ export const useProjects = () => {
     try {
       console.log('useProjects - Updating project:', id, updates);
       
-      // Optimistic update
       setProjects(prev => prev.map(p => 
         p.id === id ? { ...p, ...updates, updated_at: new Date().toISOString() } : p
       ));
@@ -186,7 +158,6 @@ export const useProjects = () => {
 
       if (error) throw error;
 
-      // Replace with server data
       setProjects(prev => prev.map(p => 
         p.id === id ? { ...data, tech_stack: data.tech_stack || [], metadata: data.metadata || {} } as Project : p
       ));
@@ -199,7 +170,6 @@ export const useProjects = () => {
       return data as Project;
     } catch (error) {
       console.error('useProjects - Error updating project:', error);
-      // Revert optimistic update by refetching
       await fetchProjects();
       toast({
         title: "Error",
@@ -208,7 +178,7 @@ export const useProjects = () => {
       });
       return null;
     }
-  }, [user, fetchProjects, toast]);
+  }, [user?.id, fetchProjects, toast]);
 
   const deleteProject = useCallback(async (id: string) => {
     if (!user) return;
@@ -216,7 +186,6 @@ export const useProjects = () => {
     try {
       console.log('useProjects - Deleting project:', id);
       
-      // Optimistic removal
       const originalProjects = projects;
       setProjects(prev => prev.filter(p => p.id !== id));
 
@@ -226,7 +195,6 @@ export const useProjects = () => {
         .eq('id', id);
 
       if (error) {
-        // Revert on error
         setProjects(originalProjects);
         throw error;
       }
@@ -243,18 +211,17 @@ export const useProjects = () => {
         variant: "destructive",
       });
     }
-  }, [user, projects, toast]);
+  }, [user?.id, projects, toast]);
 
-  // Effect to fetch projects when user changes or auth loading completes
+  // Effect to fetch projects when user changes
   useEffect(() => {
     console.log('useProjects - Effect triggered:', { user: !!user, authLoading });
     fetchProjects();
   }, [fetchProjects]);
 
-  // Memoize the returned object to prevent unnecessary re-renders
   const memoizedReturn = useMemo(() => ({
     projects,
-    loading: loading || authLoading, // Include auth loading in the overall loading state
+    loading: loading || authLoading,
     error,
     createProject,
     updateProject,
