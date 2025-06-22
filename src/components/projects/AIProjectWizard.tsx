@@ -13,11 +13,14 @@ import { Sparkles, ArrowRight, ArrowLeft, CheckCircle, Loader2 } from 'lucide-re
 import { aiContentService } from '@/lib/ai-content-service';
 import { useToast } from '@/hooks/use-toast';
 import { useProjects } from '@/hooks/useProjects';
+import { Project } from '@/types/project';
 
 interface AIProjectWizardProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+type AIModel = 'gpt-4' | 'claude' | 'gemini';
 
 const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,7 +28,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
   const [projectData, setProjectData] = useState({
     name: '',
     description: '',
-    aiModel: 'gpt-4',
+    aiModel: 'gpt-4' as AIModel,
     projectType: '',
     techStack: [],
     features: [],
@@ -48,6 +51,24 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
     'Final Review',
     'Project Creation'
   ];
+
+  // Map project types to valid Project type values
+  const getProjectType = (projectType: string): Project['type'] => {
+    switch (projectType) {
+      case 'web-app':
+      case 'mobile-app':
+      case 'saas':
+      case 'ecommerce':
+      case 'analytics':
+        return 'code_project';
+      case 'api':
+        return 'api_spec';
+      case 'cms':
+      case 'other':
+      default:
+        return 'documentation';
+    }
+  };
 
   const handleNextStep = async () => {
     if (currentStep === 5) {
@@ -99,10 +120,12 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
       await createProject({
         name: projectData.name,
         description: projectData.description,
-        project_type: projectData.projectType,
+        type: getProjectType(projectData.projectType),
+        status: 'draft',
+        tech_stack: projectData.techStack,
+        ai_model: projectData.aiModel,
         metadata: {
           ai_model: projectData.aiModel,
-          tech_stack: projectData.techStack,
           features: projectData.features,
           generated_spec: projectData.generatedSpec,
           architecture: projectData.architecture,
@@ -122,7 +145,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
       setProjectData({
         name: '',
         description: '',
-        aiModel: 'gpt-4',
+        aiModel: 'gpt-4' as AIModel,
         projectType: '',
         techStack: [],
         features: [],
@@ -173,7 +196,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
           <div className="space-y-4">
             <Label>Select AI Model</Label>
             <div className="grid gap-3">
-              {['gpt-4', 'claude', 'gemini'].map((model) => (
+              {(['gpt-4', 'claude', 'gemini'] as AIModel[]).map((model) => (
                 <Card
                   key={model}
                   className={`cursor-pointer transition-colors ${
