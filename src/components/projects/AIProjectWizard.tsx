@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useProjects } from '@/hooks/useProjects';
@@ -119,10 +118,10 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
     setLoading(false);
   };
 
-  const handleClose = (open: boolean) => {
+  const handleDialogOpenChange = (newOpen: boolean) => {
     if (!loading) {
-      onOpenChange(open);
-      if (!open) {
+      onOpenChange(newOpen);
+      if (!newOpen) {
         resetWizard();
       }
     }
@@ -167,7 +166,7 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>AI Project Wizard</DialogTitle>
