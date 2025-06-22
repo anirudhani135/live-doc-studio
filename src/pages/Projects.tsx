@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { useAuth } from '@/contexts/AuthContext';
 import { Project } from '@/types/project';
 import ProjectsHeader from '@/components/projects/ProjectsHeader';
 import ProjectsBanner from '@/components/projects/ProjectsBanner';
@@ -15,12 +16,21 @@ import AIProjectWizard from '@/components/projects/AIProjectWizard';
  * Uses memoization and optimized re-rendering patterns
  */
 const Projects = () => {
-  const { projects, createProject, updateProject, deleteProject, loading } = useProjects();
+  const { user, loading: authLoading } = useAuth();
+  const { projects, createProject, updateProject, deleteProject, loading, error } = useProjects();
   const { trackProjectCreated, trackFeatureUsed } = useAnalytics();
   
   const [activeTab, setActiveTab] = useState('all');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(false);
+
+  console.log('Projects page state:', { 
+    user: !!user, 
+    authLoading, 
+    projectsLoading: loading, 
+    projectsCount: projects?.length || 0,
+    error 
+  });
 
   // Memoize filtered projects to prevent unnecessary recalculations
   const filteredProjects = useMemo(() => {
@@ -43,22 +53,31 @@ const Projects = () => {
 
   // Memoized event handlers to prevent unnecessary re-renders
   const handleCreateProject = useCallback(() => {
+    if (!user) {
+      console.log('Projects - Cannot create project: no user');
+      return;
+    }
     trackFeatureUsed('manual_project_creation');
     setDialogOpen(true);
-  }, [trackFeatureUsed]);
+  }, [trackFeatureUsed, user]);
 
   const handleStartWizard = useCallback(() => {
+    if (!user) {
+      console.log('Projects - Cannot start wizard: no user');
+      return;
+    }
     trackFeatureUsed('ai_project_wizard');
     setWizardOpen(true);
-  }, [trackFeatureUsed]);
+  }, [trackFeatureUsed, user]);
 
   const handleProjectSave = useCallback(async (projectData: any) => {
     try {
+      console.log('Projects - Saving project:', projectData);
       await createProject(projectData);
       trackProjectCreated(projectData);
       setDialogOpen(false);
     } catch (error) {
-      console.error('Error creating project:', error);
+      console.error('Projects - Error creating project:', error);
     }
   }, [createProject, trackProjectCreated]);
 
@@ -84,11 +103,58 @@ const Projects = () => {
     setActiveTab(tab);
   }, []);
 
-  // Show loading spinner during initial load
-  if (loading && !projects.length) {
+  // Show loading spinner during auth loading or initial projects load
+  if (authLoading || (loading && !projects.length)) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">
+            {authLoading ? 'Checking authentication...' : 'Loading projects...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if there's an error and no projects
+  if (error && !projects.length) {
+    return (
+      <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="text-destructive text-lg font-medium mb-2">
+              Failed to load projects
+            </div>
+            <p className="text-muted-foreground mb-4">
+              {error}
+            </p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show auth required state if no user
+  if (!user) {
+    return (
+      <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="text-lg font-medium mb-2">
+              Authentication Required
+            </div>
+            <p className="text-muted-foreground mb-4">
+              Please log in to view your projects.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
