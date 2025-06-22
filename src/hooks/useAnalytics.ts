@@ -44,9 +44,8 @@ export const useAnalytics = () => {
         }
       };
 
-      // For now, we'll store analytics in local state until the analytics_events table is created
-      // This prevents the TypeScript errors while maintaining functionality
-      console.log('Analytics Event:', event);
+      // Track in real-time analytics
+      await supabase.from('analytics_events').insert(event);
 
       // Update usage metrics based on event type
       updateMetricsFromEvent(eventType, metadata);
@@ -87,16 +86,24 @@ export const useAnalytics = () => {
 
   const getAnalyticsData = async (timeRange: number = 30) => {
     try {
-      // For now, return mock data until analytics_events table is created
-      const mockData = {
-        dailyData: [],
-        eventTypes: {},
-        totalTokens: metrics.tokensUsed,
-        totalTimeSaved: metrics.timeSaved,
-        totalEvents: 0
-      };
-      
-      return mockData;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - timeRange);
+
+      const { data, error } = await supabase
+        .from('analytics_events')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('created_at', startDate.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Process analytics data
+      const processedData = processAnalyticsEvents(data || []);
+      return processedData;
 
     } catch (error) {
       console.error('Error fetching analytics data:', error);

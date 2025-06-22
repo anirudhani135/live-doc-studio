@@ -15,13 +15,6 @@ export interface Project {
     timeline?: string;
     complexity?: 'simple' | 'medium' | 'complex' | 'enterprise';
     target_audience?: string;
-    ai_model?: 'gpt-4' | 'claude' | 'gemini';
-    generated_spec?: any;
-    architecture?: any;
-    timeline_estimate?: string;
-    ai_generated?: boolean;
-    creation_date?: string;
-    favorited?: boolean;
   };
 }
 
