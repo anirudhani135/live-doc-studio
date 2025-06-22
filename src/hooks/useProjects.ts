@@ -5,41 +5,49 @@ import { supabase } from '@/integrations/supabase/client';
 import { Project } from '@/types/project';
 import { useToast } from '@/hooks/use-toast';
 
+// Use the Supabase generated types for row/insert/update
+type ProjectRow = {
+  id: string;
+  name: string;
+  description: string | null;
+  type: 'code_project' | 'documentation' | 'api_spec';
+  status: 'draft' | 'in_progress' | 'completed' | 'archived';
+  tech_stack: string[] | null;
+  ai_model: 'gpt-4' | 'claude' | 'gemini';
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+  metadata: any;
+};
+
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
 
-  // Memoize the fetch function with stable dependencies
+  // Memoize the fetch function to prevent unnecessary recreations
   const fetchProjects = useCallback(async () => {
-    // Don't fetch if auth is still loading or no user
-    if (authLoading || !user) {
+    if (!user) {
       setProjects([]);
       setLoading(false);
-      setError(null);
       return;
     }
 
-    console.log('useProjects - Starting fetch for user:', user.id);
     setLoading(true);
     setError(null);
     
     try {
-      const { data, error: fetchError } = await supabase
+      const { data, error } = await supabase
         .from('projects')
         .select('*')
         .eq('user_id', user.id)
         .order('updated_at', { ascending: false });
 
-      if (fetchError) {
-        console.error('useProjects - Fetch error:', fetchError);
-        throw fetchError;
-      }
+      if (error) throw error;
       
-      console.log('useProjects - Fetch successful, projects:', data?.length || 0);
-      
+      // Ensure data is valid and properly typed
       const validProjects = (data || []).map(project => ({
         ...project,
         tech_stack: project.tech_stack || [],
@@ -48,9 +56,8 @@ export const useProjects = () => {
       
       setProjects(validProjects);
     } catch (error) {
-      console.error('useProjects - Error fetching projects:', error);
+      console.error('Error fetching projects:', error);
       setError('Failed to fetch projects');
-      setProjects([]);
       toast({
         title: "Error",
         description: "Failed to fetch projects. Please try again.",
@@ -59,26 +66,17 @@ export const useProjects = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, authLoading, toast]); // Only depend on user.id, not the entire user object
+  }, [user, toast]);
 
   const createProject = useCallback(async (
     projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>
   ) => {
-    if (!user) {
-      console.log('useProjects - Cannot create project: no user');
-      toast({
-        title: "Error",
-        description: "You must be logged in to create a project.",
-        variant: "destructive",
-      });
-      return null;
-    }
+    if (!user) return null;
 
     try {
       setLoading(true);
       
-      console.log('useProjects - Creating project:', projectData);
-      
+      // Prepare the data for insertion
       const insertData = {
         name: projectData.name,
         description: projectData.description,
@@ -96,13 +94,9 @@ export const useProjects = () => {
         .select()
         .single();
 
-      if (error) {
-        console.error('useProjects - Create error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('useProjects - Project created successfully:', data);
-
+      // Add the new project to the local state
       const newProject = {
         ...data,
         tech_stack: data.tech_stack || [],
@@ -118,7 +112,7 @@ export const useProjects = () => {
 
       return newProject;
     } catch (error) {
-      console.error('useProjects - Error creating project:', error);
+      console.error('Error creating project:', error);
       setError('Failed to create project');
       toast({
         title: "Error",
@@ -129,14 +123,11 @@ export const useProjects = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, toast]);
+  }, [user, toast]);
 
   const updateProject = useCallback(async (id: string, updates: Partial<Project>) => {
-    if (!user) return null;
-
     try {
-      console.log('useProjects - Updating project:', id, updates);
-      
+      // Optimistic update
       setProjects(prev => prev.map(p => 
         p.id === id ? { ...p, ...updates, updated_at: new Date().toISOString() } : p
       ));
@@ -158,6 +149,7 @@ export const useProjects = () => {
 
       if (error) throw error;
 
+      // Replace with server data
       setProjects(prev => prev.map(p => 
         p.id === id ? { ...data, tech_stack: data.tech_stack || [], metadata: data.metadata || {} } as Project : p
       ));
@@ -169,7 +161,8 @@ export const useProjects = () => {
 
       return data as Project;
     } catch (error) {
-      console.error('useProjects - Error updating project:', error);
+      console.error('Error updating project:', error);
+      // Revert optimistic update by refetching
       await fetchProjects();
       toast({
         title: "Error",
@@ -178,14 +171,11 @@ export const useProjects = () => {
       });
       return null;
     }
-  }, [user?.id, fetchProjects, toast]);
+  }, [fetchProjects, toast]);
 
   const deleteProject = useCallback(async (id: string) => {
-    if (!user) return;
-
     try {
-      console.log('useProjects - Deleting project:', id);
-      
+      // Optimistic removal
       const originalProjects = projects;
       setProjects(prev => prev.filter(p => p.id !== id));
 
@@ -195,6 +185,7 @@ export const useProjects = () => {
         .eq('id', id);
 
       if (error) {
+        // Revert on error
         setProjects(originalProjects);
         throw error;
       }
@@ -204,30 +195,30 @@ export const useProjects = () => {
         description: "Project deleted successfully",
       });
     } catch (error) {
-      console.error('useProjects - Error deleting project:', error);
+      console.error('Error deleting project:', error);
       toast({
         title: "Error",
         description: "Failed to delete project. Please try again.",
         variant: "destructive",
       });
     }
-  }, [user?.id, projects, toast]);
+  }, [projects, toast]);
 
   // Effect to fetch projects when user changes
   useEffect(() => {
-    console.log('useProjects - Effect triggered:', { user: !!user, authLoading });
     fetchProjects();
   }, [fetchProjects]);
 
+  // Memoize the returned object to prevent unnecessary re-renders
   const memoizedReturn = useMemo(() => ({
     projects,
-    loading: loading || authLoading,
+    loading,
     error,
     createProject,
     updateProject,
     deleteProject,
     refetch: fetchProjects
-  }), [projects, loading, authLoading, error, createProject, updateProject, deleteProject, fetchProjects]);
+  }), [projects, loading, error, createProject, updateProject, deleteProject, fetchProjects]);
 
   return memoizedReturn;
 };
