@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useProjects } from '@/hooks/useProjects';
@@ -46,16 +47,16 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
     4: 'AI Model Selection'
   };
 
-  const canGoNext = useCallback(() => {
+  const canGoNext = useCallback((): boolean => {
     switch (currentStep) {
       case 1:
-        return wizardData.name.trim() && wizardData.description.trim();
+        return Boolean(wizardData.name.trim() && wizardData.description.trim());
       case 2:
-        return wizardData.type !== '';
+        return Boolean(wizardData.type && wizardData.type !== '');
       case 3:
         return true; // Tech stack is optional
       case 4:
-        return wizardData.aiModel !== '';
+        return Boolean(wizardData.aiModel && wizardData.aiModel !== '');
       default:
         return false;
     }
