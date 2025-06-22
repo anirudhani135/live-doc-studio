@@ -52,11 +52,11 @@ const AIProjectWizard: React.FC<AIProjectWizardProps> = ({ open, onOpenChange })
       case 1:
         return Boolean(wizardData.name.trim() && wizardData.description.trim());
       case 2:
-        return Boolean(wizardData.type && wizardData.type !== '');
+        return wizardData.type !== '';
       case 3:
         return true; // Tech stack is optional
       case 4:
-        return Boolean(wizardData.aiModel && wizardData.aiModel !== '');
+        return wizardData.aiModel !== '';
       default:
         return false;
     }
