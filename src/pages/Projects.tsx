@@ -9,7 +9,7 @@ import ProjectsBanner from '@/components/projects/ProjectsBanner';
 import ProjectsGrid from '@/components/projects/ProjectsGrid';
 import ProjectsEmptyState from '@/components/projects/ProjectsEmptyState';
 import ProjectDialog from '@/components/projects/ProjectDialog';
-import AIProjectWizard from '@/components/projects/AIProjectWizard';
+import ProjectCreationWizard from '@/components/projects/ProjectCreationWizard';
 
 /**
  * Main Projects page component with optimized performance
@@ -80,6 +80,43 @@ const Projects = () => {
       console.error('Projects - Error creating project:', error);
     }
   }, [createProject, trackProjectCreated]);
+
+  const handleWizardComplete = useCallback(async (projectData: any) => {
+    try {
+      console.log('Projects - Completing wizard with data:', projectData);
+      
+      // Transform wizard data to project format
+      const transformedProjectData = {
+        name: projectData.description.split('.')[0] || 'AI Generated Project',
+        description: projectData.description,
+        type: 'code_project' as const,
+        status: 'draft' as const,
+        tech_stack: projectData.analysis?.tech_recommendations || [],
+        ai_model: projectData.selectedModel as Project['ai_model'],
+        metadata: {
+          wizard_completed: true,
+          created_via: '9_step_wizard',
+          questionnaire: projectData.questionnaire,
+          analysis: projectData.analysis,
+          documentation: projectData.documentation,
+          integrations: projectData.integrations,
+          export_settings: projectData.exportSettings,
+          monitoring_config: projectData.monitoringConfig,
+          ai_generated: true
+        }
+      };
+
+      await createProject(transformedProjectData);
+      trackProjectCreated(transformedProjectData);
+      setWizardOpen(false);
+    } catch (error) {
+      console.error('Projects - Error completing wizard:', error);
+    }
+  }, [createProject, trackProjectCreated]);
+
+  const handleWizardCancel = useCallback(() => {
+    setWizardOpen(false);
+  }, []);
 
   const handleEditProject = useCallback((project: Project) => {
     console.log('Edit project:', project);
@@ -200,10 +237,13 @@ const Projects = () => {
         onSave={handleProjectSave}
       />
 
-      <AIProjectWizard
-        open={wizardOpen}
-        onOpenChange={setWizardOpen}
-      />
+      {/* 9-Step Project Creation Wizard */}
+      {wizardOpen && (
+        <ProjectCreationWizard
+          onComplete={handleWizardComplete}
+          onCancel={handleWizardCancel}
+        />
+      )}
     </div>
   );
 };
