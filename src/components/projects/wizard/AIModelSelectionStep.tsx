@@ -1,85 +1,61 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Check } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { CheckCircle } from 'lucide-react';
+
+type AIModel = 'gpt-4' | 'claude' | 'gemini';
 
 interface AIModelSelectionStepProps {
-  selectedModel: 'gpt-4' | 'claude' | 'gemini';
-  onSelect: (model: 'gpt-4' | 'claude' | 'gemini') => void;
+  selectedModel: AIModel;
+  onSelect: (model: AIModel) => void;
 }
 
 const AIModelSelectionStep: React.FC<AIModelSelectionStepProps> = ({
   selectedModel,
   onSelect
 }) => {
-  const models = [
+  const models: { id: AIModel; name: string; description: string }[] = [
     {
-      id: 'gpt-4' as const,
+      id: 'gpt-4',
       name: 'GPT-4',
-      description: 'Advanced reasoning and code generation',
-      features: ['Excellent code quality', 'Strong reasoning', 'Versatile'],
-      recommended: true
+      description: 'Best for comprehensive analysis and coding'
     },
     {
-      id: 'claude' as const,
+      id: 'claude',
       name: 'Claude',
-      description: 'Thoughtful analysis and documentation',
-      features: ['Great for docs', 'Detailed analysis', 'Safety focused'],
-      recommended: false
+      description: 'Excellent for detailed documentation'
     },
     {
-      id: 'gemini' as const,
+      id: 'gemini',
       name: 'Gemini',
-      description: 'Fast and efficient processing',
-      features: ['Quick responses', 'Good performance', 'Cost effective'],
-      recommended: false
+      description: 'Great for creative and technical solutions'
     }
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Choose AI Model</h3>
-        <p className="text-muted-foreground mb-6">
-          Select the AI model that will help generate your project specifications and documentation.
-        </p>
-      </div>
-
-      <div className="grid gap-4">
+    <div className="space-y-4">
+      <Label>Select AI Model</Label>
+      <div className="grid gap-3">
         {models.map((model) => (
           <Card
             key={model.id}
-            className={`cursor-pointer transition-all ${
-              selectedModel === model.id
-                ? 'ring-2 ring-primary border-primary'
-                : 'hover:border-primary/50'
+            className={`cursor-pointer transition-colors ${
+              selectedModel === model.id ? 'border-primary bg-primary/5' : ''
             }`}
             onClick={() => onSelect(model.id)}
           >
-            <CardHeader className="pb-3">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CardTitle className="text-base">{model.name}</CardTitle>
-                  {model.recommended && (
-                    <Badge variant="default" className="text-xs">
-                      Recommended
-                    </Badge>
-                  )}
+                <div>
+                  <h4 className="font-medium">{model.name}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {model.description}
+                  </p>
                 </div>
                 {selectedModel === model.id && (
-                  <Check className="h-5 w-5 text-primary" />
+                  <CheckCircle className="h-5 w-5 text-primary" />
                 )}
-              </div>
-              <CardDescription>{model.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-1">
-                {model.features.map((feature) => (
-                  <Badge key={feature} variant="outline" className="text-xs">
-                    {feature}
-                  </Badge>
-                ))}
               </div>
             </CardContent>
           </Card>

@@ -20,46 +20,31 @@ const WizardNavigation: React.FC<WizardNavigationProps> = ({
   onPrevious,
   onNext
 }) => {
-  const isFirstStep = currentStep === 1;
   const isLastStep = currentStep === totalSteps;
 
   return (
-    <div className="flex items-center justify-between pt-6 border-t">
+    <div className="flex justify-between">
       <Button
         variant="outline"
         onClick={onPrevious}
-        disabled={isFirstStep || isProcessing}
-        className="flex items-center gap-2"
+        disabled={currentStep === 1 || isProcessing}
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="h-4 w-4 mr-2" />
         Previous
       </Button>
-
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>Step {currentStep} of {totalSteps}</span>
-      </div>
-
+      
       <Button
         onClick={onNext}
         disabled={!canProceed || isProcessing}
-        className="flex items-center gap-2"
       >
         {isProcessing ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Processing...
-          </>
+          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
         ) : isLastStep ? (
-          <>
-            <CheckCircle className="h-4 w-4" />
-            Create Project
-          </>
+          <CheckCircle className="h-4 w-4 mr-2" />
         ) : (
-          <>
-            Next
-            <ArrowRight className="h-4 w-4" />
-          </>
+          <ArrowRight className="h-4 w-4 mr-2" />
         )}
+        {isLastStep ? 'Complete' : 'Next'}
       </Button>
     </div>
   );

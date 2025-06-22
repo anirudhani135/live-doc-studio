@@ -1,5 +1,7 @@
 
-import React, { memo } from 'react';
+// Ensure grid is responsive, reflows at standard breakpoints
+
+import React from 'react';
 import { Project } from '@/types/project';
 import ProjectCard from './ProjectCard';
 
@@ -11,38 +13,27 @@ interface ProjectsGridProps {
   onOpen: (project: Project) => void;
 }
 
-/**
- * Skeleton loader component for project cards
- */
-const ProjectCardSkeleton = memo(() => (
-  <div className="animate-pulse">
-    <div className="h-40 sm:h-48 bg-gray-200 rounded-lg" />
-  </div>
-));
-
-/**
- * Grid layout for displaying projects with responsive design
- * Optimized with memoization to prevent unnecessary re-renders
- */
-const ProjectsGrid: React.FC<ProjectsGridProps> = memo(({
+const ProjectsGrid: React.FC<ProjectsGridProps> = ({
   projects,
   loading,
   onEdit,
   onDelete,
   onOpen
 }) => {
-  // Render loading skeleton with consistent grid layout
+  // Loading skeleton
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.from({ length: 6 }, (_, index) => (
-          <ProjectCardSkeleton key={index} />
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="animate-pulse">
+            <div className="h-40 sm:h-48 bg-gray-200 rounded-lg" />
+          </div>
         ))}
       </div>
     );
   }
 
-  // Render projects grid with consistent responsive layout
+  // Projects grid
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {projects.map((project) => (
@@ -56,8 +47,6 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = memo(({
       ))}
     </div>
   );
-});
-
-ProjectsGrid.displayName = 'ProjectsGrid';
+};
 
 export default ProjectsGrid;

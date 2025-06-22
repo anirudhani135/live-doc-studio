@@ -21,7 +21,6 @@ export interface Project {
     timeline_estimate?: string;
     ai_generated?: boolean;
     creation_date?: string;
-    wizard_completed?: boolean;
     favorited?: boolean;
   };
 }

@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Project } from '@/types/project';
@@ -23,21 +23,13 @@ type ProjectRow = {
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Memoize the fetch function to prevent unnecessary recreations
-  const fetchProjects = useCallback(async () => {
-    if (!user) {
-      setProjects([]);
-      setLoading(false);
-      return;
-    }
+  const fetchProjects = async () => {
+    if (!user) return;
 
     setLoading(true);
-    setError(null);
-    
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -46,114 +38,69 @@ export const useProjects = () => {
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      
-      // Ensure data is valid and properly typed
-      const validProjects = (data || []).map(project => ({
-        ...project,
-        tech_stack: project.tech_stack || [],
-        metadata: project.metadata || {}
-      })) as Project[];
-      
-      setProjects(validProjects);
+      // Cast tech_stack to [] for compatibility
+      setProjects((data as Project[]) || []);
     } catch (error) {
       console.error('Error fetching projects:', error);
-      setError('Failed to fetch projects');
       toast({
         title: "Error",
-        description: "Failed to fetch projects. Please try again.",
+        description: "Failed to fetch projects",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
-  }, [user, toast]);
+  };
 
-  const createProject = useCallback(async (
+  const createProject = async (
     projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'user_id'>
   ) => {
     if (!user) return null;
 
     try {
-      setLoading(true);
-      
-      // Prepare the data for insertion
-      const insertData = {
-        name: projectData.name,
-        description: projectData.description,
-        type: projectData.type,
-        status: projectData.status || 'draft',
-        tech_stack: projectData.tech_stack || [],
-        ai_model: projectData.ai_model || 'gpt-4',
-        metadata: projectData.metadata || {},
-        user_id: user.id
-      };
-
       const { data, error } = await supabase
         .from('projects')
-        .insert([insertData])
+        .insert([
+          {
+            ...projectData,
+            user_id: user.id
+          }
+        ])
         .select()
         .single();
 
       if (error) throw error;
 
-      // Add the new project to the local state
-      const newProject = {
-        ...data,
-        tech_stack: data.tech_stack || [],
-        metadata: data.metadata || {}
-      } as Project;
-      
-      setProjects(prev => [newProject, ...prev]);
-
+      setProjects(prev => [data as Project, ...prev]);
       toast({
         title: "Success",
         description: "Project created successfully",
       });
 
-      return newProject;
+      return data as Project;
     } catch (error) {
       console.error('Error creating project:', error);
-      setError('Failed to create project');
       toast({
         title: "Error",
-        description: "Failed to create project. Please try again.",
+        description: "Failed to create project",
         variant: "destructive",
       });
       return null;
-    } finally {
-      setLoading(false);
     }
-  }, [user, toast]);
+  };
 
-  const updateProject = useCallback(async (id: string, updates: Partial<Project>) => {
+  const updateProject = async (id: string, updates: Partial<Project>) => {
     try {
-      // Optimistic update
-      setProjects(prev => prev.map(p => 
-        p.id === id ? { ...p, ...updates, updated_at: new Date().toISOString() } : p
-      ));
-
       const { data, error } = await supabase
         .from('projects')
-        .update({
-          name: updates.name,
-          description: updates.description,
-          type: updates.type,
-          status: updates.status,
-          tech_stack: updates.tech_stack,
-          ai_model: updates.ai_model,
-          metadata: updates.metadata
-        })
+        .update(updates)
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
 
-      // Replace with server data
-      setProjects(prev => prev.map(p => 
-        p.id === id ? { ...data, tech_stack: data.tech_stack || [], metadata: data.metadata || {} } as Project : p
-      ));
-      
+      setProjects(prev => prev.map(p => p.id === id ? (data as Project) : p));
       toast({
         title: "Success",
         description: "Project updated successfully",
@@ -162,34 +109,25 @@ export const useProjects = () => {
       return data as Project;
     } catch (error) {
       console.error('Error updating project:', error);
-      // Revert optimistic update by refetching
-      await fetchProjects();
       toast({
         title: "Error",
-        description: "Failed to update project. Please try again.",
+        description: "Failed to update project",
         variant: "destructive",
       });
       return null;
     }
-  }, [fetchProjects, toast]);
+  };
 
-  const deleteProject = useCallback(async (id: string) => {
+  const deleteProject = async (id: string) => {
     try {
-      // Optimistic removal
-      const originalProjects = projects;
-      setProjects(prev => prev.filter(p => p.id !== id));
-
       const { error } = await supabase
         .from('projects')
         .delete()
         .eq('id', id);
 
-      if (error) {
-        // Revert on error
-        setProjects(originalProjects);
-        throw error;
-      }
+      if (error) throw error;
 
+      setProjects(prev => prev.filter(p => p.id !== id));
       toast({
         title: "Success",
         description: "Project deleted successfully",
@@ -198,27 +136,22 @@ export const useProjects = () => {
       console.error('Error deleting project:', error);
       toast({
         title: "Error",
-        description: "Failed to delete project. Please try again.",
+        description: "Failed to delete project",
         variant: "destructive",
       });
     }
-  }, [projects, toast]);
+  };
 
-  // Effect to fetch projects when user changes
   useEffect(() => {
     fetchProjects();
-  }, [fetchProjects]);
+  }, [user]);
 
-  // Memoize the returned object to prevent unnecessary re-renders
-  const memoizedReturn = useMemo(() => ({
+  return {
     projects,
     loading,
-    error,
     createProject,
     updateProject,
     deleteProject,
     refetch: fetchProjects
-  }), [projects, loading, error, createProject, updateProject, deleteProject, fetchProjects]);
-
-  return memoizedReturn;
+  };
 };
